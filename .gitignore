@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # Ignore appsettings.Development.json
 appsettings.Development.json
+/GeoSense.API/appsettings.Development.json
