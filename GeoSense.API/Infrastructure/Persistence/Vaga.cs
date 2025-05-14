@@ -12,7 +12,9 @@ namespace GeoSense.API.Infrastructure.Persistence
         public Guid PatioId { get; private set; }
         public virtual Patio Patio { get; set; }
 
-        public Vaga(Guid id, int numero, Guid patio_id)
+        protected Vaga() { }
+
+        public Vaga(int numero, Guid patio_id)
         {
             Id = Guid.NewGuid();
             Numero = numero;

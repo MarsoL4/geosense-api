@@ -12,6 +12,7 @@
         public Guid VagaId { get; private set; }
         public virtual Vaga Vaga { get; set; }
 
+        protected Moto() { }
 
         public Moto(Guid id, string modelo, string placa, string chassi, string problema_identificado, Guid vaga_id)
         {
