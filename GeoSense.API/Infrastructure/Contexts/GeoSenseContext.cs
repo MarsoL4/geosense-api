@@ -4,14 +4,19 @@ using GeoSense.API.Infrastructure.Mappings;
 
 namespace GeoSense.API.Infrastructure.Contexts
 {
-    public class MotoContext : DbContext
+    public class GeoSenseContext : DbContext
     {
-        public MotoContext(DbContextOptions<MotoContext> options)
+        public GeoSenseContext(DbContextOptions<GeoSenseContext> options)
             : base(options)
         {
         }
 
         public DbSet<Moto> Moto { get; set; }
+        public DbSet<Moto> Motos { get; set; }
+        public DbSet<Vaga> Vagas { get; set; }
+        public DbSet<Defeito> Defeitos { get; set; }
+        public DbSet<AlocacaoMoto> AlocacoesMoto { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
