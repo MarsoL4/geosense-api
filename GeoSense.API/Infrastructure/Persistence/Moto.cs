@@ -24,6 +24,8 @@
             VagaId= vaga_id;
         }
 
+        public ICollection<Defeito> Defeitos { get; set; } = new List<Defeito>();
+
 
     }
 }

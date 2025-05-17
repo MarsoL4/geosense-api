@@ -7,6 +7,8 @@ namespace GeoSense.API.Infrastructure.Persistence
     {
         public Guid Id { get; private set; }
         public int Numero { get; private set; }
+        public TipoVaga Tipo { get; private set; }
+        public StatusVaga Status { get; private set; }
 
         //N...1
         public Guid PatioId { get; private set; }
