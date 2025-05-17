@@ -14,9 +14,9 @@ namespace GeoSense.API.Controllers
     [ApiController]
     public class MotoController : ControllerBase
     {
-        private readonly MotoContext _context;
+        private readonly GeoSenseContext _context;
 
-        public MotoController(MotoContext context)
+        public MotoController(GeoSenseContext context)
         {
             _context = context;
         }
