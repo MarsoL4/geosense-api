@@ -4,6 +4,7 @@
     {
         public long Id { get; set; }
         public string Descricao { get; set; }
+        public string TiposDefeitos { get; set; }
         public Guid MotoId { get; set; }
         public Moto Moto { get; set; }
     }

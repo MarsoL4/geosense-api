@@ -2,11 +2,13 @@
 {
     public class AlocacaoMoto
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
+        public DateTime DataHoraAlocacao { get; set; }
         public Guid MotoId { get; set; }
-        public DateTime Entrada { get; set; }
-        public DateTime? Saida { get; set; }
+        public Guid VagaId { get; set; }
+        public Guid MecanicoResponsavelId { get; set; }
         public Moto Moto { get; set; }
+        public Vaga Vaga { get; set; }
     }
 
 }

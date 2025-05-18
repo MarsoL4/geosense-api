@@ -16,7 +16,7 @@
 
         public Moto(Guid id, string modelo, string placa, string chassi, string problema_identificado, Guid vaga_id)
         {
-            Id = Guid.NewGuid();
+            Id = id;
             Modelo = modelo;
             Placa = placa;
             Chassi = chassi;
@@ -25,6 +25,8 @@
         }
 
         public ICollection<Defeito> Defeitos { get; set; } = new List<Defeito>();
+
+        public ICollection<AlocacaoMoto> Alocacoes { get; set; } = new List<AlocacaoMoto>();
 
 
     }

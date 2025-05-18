@@ -25,5 +25,8 @@ namespace GeoSense.API.Infrastructure.Persistence
             PatioId = patio_id;
         }
 
+        public ICollection<Moto> Motos { get; set; } = new List<Moto>();
+        public ICollection<AlocacaoMoto> Alocacoes { get; set; } = new List<AlocacaoMoto>();
+
     }
 }

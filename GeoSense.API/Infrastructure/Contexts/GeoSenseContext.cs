@@ -11,16 +11,17 @@ namespace GeoSense.API.Infrastructure.Contexts
         {
         }
 
-        public DbSet<Moto> Moto { get; set; }
         public DbSet<Moto> Motos { get; set; }
         public DbSet<Vaga> Vagas { get; set; }
         public DbSet<Defeito> Defeitos { get; set; }
         public DbSet<AlocacaoMoto> AlocacoesMoto { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new MotoMapping());
+            modelBuilder.ApplyConfiguration(new VagaMapping());
+            modelBuilder.ApplyConfiguration(new DefeitoMapping());
+            modelBuilder.ApplyConfiguration(new AlocacaoMotoMapping());
         }
     }
 
