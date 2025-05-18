@@ -16,17 +16,20 @@ namespace GeoSense.API.Services
 
         public async Task<VagasStatusDTO> ObterVagasLivresAsync()
         {
-            var livres = await _context.Vagas
+            // Busca apenas vagas com Status LIVRE, e seleciona apenas os campos necessários
+            var vagasLivres = await _context.Vagas
                 .Where(v => v.Status == StatusVaga.LIVRE)
+                .Select(v => v.Tipo)
                 .ToListAsync();
 
-            var comProblema = livres.Count(v => v.Tipo != TipoVaga.Sem_Problema);
-            var semProblema = livres.Count(v => v.Tipo == TipoVaga.Sem_Problema);
+            // Conta as categorias de forma simples e direta
+            var livresComProblema = vagasLivres.Count(tipo => tipo != TipoVaga.Sem_Problema);
+            var livresSemProblema = vagasLivres.Count(tipo => tipo == TipoVaga.Sem_Problema);
 
             return new VagasStatusDTO
             {
-                LivresComProblema = comProblema,
-                LivresSemProblema = semProblema
+                LivresComProblema = livresComProblema,
+                LivresSemProblema = livresSemProblema
             };
         }
     }
