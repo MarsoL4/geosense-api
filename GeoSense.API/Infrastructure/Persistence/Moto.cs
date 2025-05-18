@@ -9,12 +9,12 @@
         public string Problema_Identificado { get; private set; }
 
         // 1..1
-        public Guid VagaId { get; private set; }
+        public long VagaId { get; private set; }
         public virtual Vaga Vaga { get; set; }
 
         protected Moto() { }
 
-        public Moto(long id, string modelo, string placa, string chassi, string problema_identificado, Guid vaga_id)
+        public Moto(long id, string modelo, string placa, string chassi, string problema_identificado, long vaga_id)
         {
             Id = id;
             Modelo = modelo;
