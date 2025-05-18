@@ -6,21 +6,21 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GeoSense.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class RecreatingDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Patio",
+                name: "PATIO",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "NUMBER(19)", nullable: false)
+                    ID = table.Column<long>(type: "NUMBER(19)", nullable: false)
                         .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Patio", x => x.Id);
+                    table.PrimaryKey("PK_PATIO", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -38,10 +38,10 @@ namespace GeoSense.API.Migrations
                 {
                     table.PrimaryKey("PK_VAGA", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_VAGA_Patio_PATIO_ID",
+                        name: "FK_VAGA_PATIO_PATIO_ID",
                         column: x => x.PATIO_ID,
-                        principalTable: "Patio",
-                        principalColumn: "Id",
+                        principalTable: "PATIO",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -159,7 +159,7 @@ namespace GeoSense.API.Migrations
                 name: "VAGA");
 
             migrationBuilder.DropTable(
-                name: "Patio");
+                name: "PATIO");
         }
     }
 }

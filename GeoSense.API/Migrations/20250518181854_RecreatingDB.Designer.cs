@@ -12,8 +12,8 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace GeoSense.API.Migrations
 {
     [DbContext(typeof(GeoSenseContext))]
-    [Migration("20250518170139_Initial")]
-    partial class Initial
+    [Migration("20250518181854_RecreatingDB")]
+    partial class RecreatingDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,7 +116,7 @@ namespace GeoSense.API.Migrations
                         .HasColumnType("NVARCHAR2(10)")
                         .HasColumnName("PLACA");
 
-                    b.Property<string>("Problema_Identificado")
+                    b.Property<string>("ProblemaIdentificado")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("NVARCHAR2(255)")
@@ -137,13 +137,14 @@ namespace GeoSense.API.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(19)");
+                        .HasColumnType("NUMBER(19)")
+                        .HasColumnName("ID");
 
                     OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.HasKey("Id");
 
-                    b.ToTable("Patio");
+                    b.ToTable("PATIO", (string)null);
                 });
 
             modelBuilder.Entity("GeoSense.API.Infrastructure.Persistence.Vaga", b =>
