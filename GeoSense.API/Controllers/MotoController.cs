@@ -25,14 +25,14 @@ namespace GeoSense.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Moto>>> GetMoto()
         {
-            return await _context.Moto.ToListAsync();
+            return await _context.Motos.ToListAsync();
         }
 
         // GET: api/Moto/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Moto>> GetMoto(Guid id)
         {
-            var moto = await _context.Moto.FindAsync(id);
+            var moto = await _context.Motos.FindAsync(id);
 
             if (moto == null)
             {
@@ -78,7 +78,7 @@ namespace GeoSense.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Moto>> PostMoto(Moto moto)
         {
-            _context.Moto.Add(moto);
+            _context.Motos.Add(moto);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMoto", new { id = moto.Id }, moto);
@@ -88,13 +88,13 @@ namespace GeoSense.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMoto(Guid id)
         {
-            var moto = await _context.Moto.FindAsync(id);
+            var moto = await _context.Motos.FindAsync(id);
             if (moto == null)
             {
                 return NotFound();
             }
 
-            _context.Moto.Remove(moto);
+            _context.Motos.Remove(moto);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +102,7 @@ namespace GeoSense.API.Controllers
 
         private bool MotoExists(Guid id)
         {
-            return _context.Moto.Any(e => e.Id == id);
+            return _context.Motos.Any(e => e.Id == id);
         }
     }
 }
