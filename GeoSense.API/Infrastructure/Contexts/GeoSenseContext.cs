@@ -24,5 +24,4 @@ namespace GeoSense.API.Infrastructure.Contexts
             modelBuilder.ApplyConfiguration(new AlocacaoMotoMapping());
         }
     }
-
 }

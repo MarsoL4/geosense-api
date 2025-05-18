@@ -23,14 +23,14 @@ namespace GeoSense.API.Controllers
 
         // GET: api/Moto
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Moto>>> GetMoto()
+        public async Task<ActionResult<IEnumerable<Moto>>> GetMotos()
         {
             return await _context.Motos.ToListAsync();
         }
 
         // GET: api/Moto/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Moto>> GetMoto(Guid id)
+        public async Task<ActionResult<Moto>> GetMoto(long id)
         {
             var moto = await _context.Motos.FindAsync(id);
 
@@ -45,7 +45,7 @@ namespace GeoSense.API.Controllers
         // PUT: api/Moto/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMoto(Guid id, Moto moto)
+        public async Task<IActionResult> PutMoto(long id, Moto moto)
         {
             if (id != moto.Id)
             {
@@ -86,7 +86,7 @@ namespace GeoSense.API.Controllers
 
         // DELETE: api/Moto/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMoto(Guid id)
+        public async Task<IActionResult> DeleteMoto(long id)
         {
             var moto = await _context.Motos.FindAsync(id);
             if (moto == null)
@@ -100,7 +100,7 @@ namespace GeoSense.API.Controllers
             return NoContent();
         }
 
-        private bool MotoExists(Guid id)
+        private bool MotoExists(long id)
         {
             return _context.Motos.Any(e => e.Id == id);
         }

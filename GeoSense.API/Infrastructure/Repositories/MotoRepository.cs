@@ -16,20 +16,17 @@ namespace GeoSense.Infrastructure.Repositories
 
         public async Task<List<Moto>> ObterTodasAsync()
         {
-            return await _context.Motos.Include(m => m.Vaga).ToListAsync();
+            return await _context.Motos
+                .Include(m => m.Vaga)
+                .ToListAsync();
         }
 
-        public async Task<Moto> ObterPorIdComVagaEDefeitosAsync(Guid id)
+        public async Task<Moto> ObterPorIdComVagaEDefeitosAsync(long id)
         {
             return await _context.Motos
                 .Include(m => m.Vaga)
                 .Include(m => m.Defeitos)
                 .FirstOrDefaultAsync(m => m.Id == id);
-        }
-
-        public Task<Moto> ObterPorIdComVagaEDefeitosAsync(long id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

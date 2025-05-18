@@ -2,7 +2,7 @@
 {
     public class Moto
     {
-        public Guid Id { get; private set; }
+        public long Id { get; private set; }
         public string Modelo { get; private set; }
         public string Placa { get; private set; }
         public string Chassi { get; private set; }
@@ -14,7 +14,7 @@
 
         protected Moto() { }
 
-        public Moto(Guid id, string modelo, string placa, string chassi, string problema_identificado, Guid vaga_id)
+        public Moto(long id, string modelo, string placa, string chassi, string problema_identificado, Guid vaga_id)
         {
             Id = id;
             Modelo = modelo;
