@@ -19,6 +19,7 @@ namespace GeoSense.API.Infrastructure.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new MotoMapping());
+            modelBuilder.ApplyConfiguration(new PatioMapping());
             modelBuilder.ApplyConfiguration(new VagaMapping());
             modelBuilder.ApplyConfiguration(new DefeitoMapping());
             modelBuilder.ApplyConfiguration(new AlocacaoMotoMapping());
