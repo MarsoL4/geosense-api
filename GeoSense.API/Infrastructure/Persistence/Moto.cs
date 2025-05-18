@@ -2,17 +2,17 @@
 {
     public class Moto
     {
-        public long Id { get; private set; }
-        public string Modelo { get; private set; }
-        public string Placa { get; private set; }
-        public string Chassi { get; private set; }
-        public string Problema_Identificado { get; private set; }
+        public long Id { get; set; }
+        public string Modelo { get; set; }
+        public string Placa { get; set; }
+        public string Chassi { get; set; }
+        public string ProblemaIdentificado { get; set; }
 
         // 1..1
-        public long VagaId { get; private set; }
+        public long VagaId { get; set; }
         public virtual Vaga Vaga { get; set; }
 
-        protected Moto() { }
+        public Moto() { }
 
         public Moto(long id, string modelo, string placa, string chassi, string problema_identificado, long vaga_id)
         {
@@ -20,7 +20,7 @@
             Modelo = modelo;
             Placa = placa;
             Chassi = chassi;
-            Problema_Identificado = problema_identificado;
+            ProblemaIdentificado = problema_identificado;
             VagaId= vaga_id;
         }
 

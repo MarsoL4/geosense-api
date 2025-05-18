@@ -33,7 +33,7 @@ namespace GeoSense.API.Services
                 Modelo = moto.Modelo,
                 Placa = moto.Placa,
                 Chassi = moto.Chassi,
-                ProblemaIdentificado = moto.Problema_Identificado,
+                ProblemaIdentificado = moto.ProblemaIdentificado,
                 VagaStatus = moto.Vaga?.Status.ToString(),
                 VagaTipo = moto.Vaga?.Tipo.ToString(),
                 Defeitos = moto.Defeitos?.Select(d => d.Descricao).ToList() ?? new List<string>()
