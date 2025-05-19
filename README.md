@@ -21,7 +21,7 @@ API RESTful desenvolvida em .NET para gerenciamento de motos e vagas de estacion
 - `PUT /api/vaga/{id}` – Atualizar Vaga
 - `DELETE /api/vaga/{id}` – Remover Vaga
 
-###Dashboard
+### Dashboard
 - `GET /api/dashboard` - Retorna dados resumidos do dashboard, incluindo total de motos cadastradas, motos com problema identificado, vagas livres, vagas ocupadas e total de vagas disponíveis.
 
 ---
