@@ -3,7 +3,7 @@ using GeoSense.API.Domain.Enums;
 
 namespace GeoSense.API.Infrastructure.Persistence
 {
-    public class Vaga : Audit
+    public class Vaga
     {
         public long Id { get; private set; }
         public int Numero { get; private set; }
