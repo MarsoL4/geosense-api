@@ -36,8 +36,6 @@ namespace GeoSense.API
 
             var app = builder.Build();
 
-            builder.WebHost.UseUrls("http://0.0.0.0:80");
-           
             app.UseSwagger();
             app.UseSwaggerUI();
 
