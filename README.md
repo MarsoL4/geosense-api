@@ -1,5 +1,6 @@
 # GeoSense API
 
+
 ## 📌 Descrição do Projeto
 
 API RESTful desenvolvida em .NET para gerenciamento de motos e vagas de estacionamento, utilizando arquitetura em camadas, banco de dados Oracle, e documentação interativa via Swagger. O projeto foi implantado em uma VM Linux no Azure utilizando Docker.
