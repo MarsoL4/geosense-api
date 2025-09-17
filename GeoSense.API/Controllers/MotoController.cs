@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Infrastructure.Persistence;
 using GeoSense.API.DTOs;
+using GeoSense.API.Helpers;
 
 namespace GeoSense.API.Controllers
 {
@@ -18,7 +19,7 @@ namespace GeoSense.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResultDTO<Moto>>> GetMotos([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<PagedHateoasDTO<Moto>>> GetMotos([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             var query = _context.Motos.Include(m => m.Vaga).AsQueryable();
             var totalCount = await query.CountAsync();
@@ -27,12 +28,15 @@ namespace GeoSense.API.Controllers
                 .Take(pageSize)
                 .ToListAsync();
 
-            var result = new PagedResultDTO<Moto>
+            var links = HateoasHelper.GetPagedLinks(Url, "Motos", page, pageSize, totalCount);
+
+            var result = new PagedHateoasDTO<Moto>
             {
                 Items = items,
                 TotalCount = totalCount,
                 Page = page,
-                PageSize = pageSize
+                PageSize = pageSize,
+                Links = links
             };
 
             return Ok(result);
