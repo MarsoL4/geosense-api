@@ -1,15 +1,27 @@
-﻿using GeoSense.API.Controllers;
+﻿using Xunit;
+using GeoSense.API.Controllers;
 using GeoSense.API.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using GeoSense.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using GeoSense.API.Infrastructure.Persistence;
 using GeoSense.API.Domain.Enums;
+using AutoMapper;
+using GeoSense.API.AutoMapper;
 
 namespace GeoSense.API.Tests
 {
     public class VagaControllerTests
     {
+        private static IMapper CreateMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+            });
+            return config.CreateMapper();
+        }
+
         [Fact]
         public async Task PostVaga_DeveRetornarCreated()
         {
@@ -21,7 +33,8 @@ namespace GeoSense.API.Tests
             context.Patios.Add(new Patio { });
             await context.SaveChangesAsync();
 
-            var controller = new VagaController(context);
+            var mapper = CreateMapper();
+            var controller = new VagaController(context, mapper);
 
             var dto = new VagaDTO
             {
@@ -44,7 +57,8 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
-            var controller = new VagaController(context);
+            var mapper = CreateMapper();
+            var controller = new VagaController(context, mapper);
 
             var result = await controller.GetVaga(999);
 
