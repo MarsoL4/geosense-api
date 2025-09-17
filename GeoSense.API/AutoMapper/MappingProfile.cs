@@ -8,12 +8,6 @@ namespace GeoSense.API.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<Moto, MotoListagemDTO>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Vaga.Status.ToString()))
-                .ForMember(dest => dest.TipoVaga, opt => opt.MapFrom(src => src.Vaga.Tipo.ToString()));
-
             CreateMap<Moto, MotoDetalhesDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))
