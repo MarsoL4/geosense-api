@@ -19,9 +19,24 @@ namespace GeoSense.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Vaga>>> GetVagas()
+        public async Task<ActionResult<PagedResultDTO<Vaga>>> GetVagas([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            return await _context.Vagas.ToListAsync();
+            var query = _context.Vagas.AsQueryable();
+            var totalCount = await query.CountAsync();
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var result = new PagedResultDTO<Vaga>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -40,7 +55,6 @@ namespace GeoSense.API.Controllers
         {
             var novaVaga = new Vaga(dto.Numero, dto.PatioId);
 
-            // caso queira permitir personalização opcional do tipo/status:
             novaVaga.GetType().GetProperty("Tipo")?.SetValue(novaVaga, (TipoVaga)dto.Tipo);
             novaVaga.GetType().GetProperty("Status")?.SetValue(novaVaga, (StatusVaga)dto.Status);
 
@@ -57,7 +71,6 @@ namespace GeoSense.API.Controllers
             if (vaga == null)
                 return NotFound();
 
-            // atualizações possíveis — via reflexão por causa dos setters privados
             vaga.GetType().GetProperty("Numero")?.SetValue(vaga, dto.Numero);
             vaga.GetType().GetProperty("Tipo")?.SetValue(vaga, (TipoVaga)dto.Tipo);
             vaga.GetType().GetProperty("Status")?.SetValue(vaga, (StatusVaga)dto.Status);

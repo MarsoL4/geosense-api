@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Infrastructure.Persistence;
-using GeoSense.API.DTOs; // 👈 importante
+using GeoSense.API.DTOs;
 
 namespace GeoSense.API.Controllers
 {
@@ -18,11 +18,24 @@ namespace GeoSense.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Moto>>> GetMotos()
+        public async Task<ActionResult<PagedResultDTO<Moto>>> GetMotos([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            return await _context.Motos
-                .Include(m => m.Vaga) // opcional: traz o relacionamento
+            var query = _context.Motos.Include(m => m.Vaga).AsQueryable();
+            var totalCount = await query.CountAsync();
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            var result = new PagedResultDTO<Moto>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -47,7 +60,6 @@ namespace GeoSense.API.Controllers
             if (moto == null)
                 return NotFound();
 
-            // atualiza os campos com os dados do DTO
             moto.Modelo = dto.Modelo;
             moto.Placa = dto.Placa;
             moto.Chassi = dto.Chassi;

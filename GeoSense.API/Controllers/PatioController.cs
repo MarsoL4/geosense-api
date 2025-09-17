@@ -17,14 +17,27 @@ namespace GeoSense.API.Controllers
             _context = context;
         }
 
-        // GET: api/patio
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Patio>>> GetPatios()
+        public async Task<ActionResult<PagedResultDTO<Patio>>> GetPatios([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            return await _context.Patios.ToListAsync();
+            var query = _context.Patios.AsQueryable();
+            var totalCount = await query.CountAsync();
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var result = new PagedResultDTO<Patio>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+
+            return Ok(result);
         }
 
-        // GET: api/patio/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Patio>> GetPatio(long id)
         {
@@ -34,9 +47,8 @@ namespace GeoSense.API.Controllers
             return patio;
         }
 
-        // POST: api/patio
         [HttpPost]
-        public async Task<ActionResult<Patio>> PostPatio(PatioDTO dto)
+        public async Task<ActionResult<Patio>> PostPatio()
         {
             var novoPatio = new Patio();
             _context.Patios.Add(novoPatio);
@@ -44,9 +56,8 @@ namespace GeoSense.API.Controllers
             return CreatedAtAction(nameof(GetPatio), new { id = novoPatio.Id }, novoPatio);
         }
 
-        // PUT: api/patio/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPatio(long id, PatioDTO dto)
+        public async Task<IActionResult> PutPatio(long id)
         {
             var patio = await _context.Patios.FindAsync(id);
             if (patio == null)
@@ -56,7 +67,6 @@ namespace GeoSense.API.Controllers
             return NoContent();
         }
 
-        // DELETE: api/patio/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePatio(long id)
         {
