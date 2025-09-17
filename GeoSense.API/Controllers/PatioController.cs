@@ -18,6 +18,12 @@ namespace GeoSense.API.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Retorna uma lista paginada de pátios cadastrados.
+        /// </summary>
+        /// <param name="page">Número da página (padrão: 1)</param>
+        /// <param name="pageSize">Quantidade de itens por página (padrão: 10)</param>
+        /// <returns>Página de pátios</returns>
         [HttpGet]
         public async Task<ActionResult<PagedHateoasDTO<Patio>>> GetPatios([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
@@ -42,6 +48,10 @@ namespace GeoSense.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Retorna os dados de um pátio por ID.
+        /// </summary>
+        /// <param name="id">ID do pátio</param>
         [HttpGet("{id}")]
         public async Task<ActionResult<Patio>> GetPatio(long id)
         {
@@ -51,6 +61,9 @@ namespace GeoSense.API.Controllers
             return patio;
         }
 
+        /// <summary>
+        /// Cadastra um novo pátio.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<Patio>> PostPatio()
         {
@@ -60,6 +73,10 @@ namespace GeoSense.API.Controllers
             return CreatedAtAction(nameof(GetPatio), new { id = novoPatio.Id }, novoPatio);
         }
 
+        /// <summary>
+        /// Atualiza os dados de um pátio existente.
+        /// </summary>
+        /// <param name="id">ID do pátio</param>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPatio(long id)
         {
@@ -71,6 +88,10 @@ namespace GeoSense.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Exclui um pátio do sistema.
+        /// </summary>
+        /// <param name="id">ID do pátio</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePatio(long id)
         {

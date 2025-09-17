@@ -19,6 +19,12 @@ namespace GeoSense.API.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Retorna uma lista paginada de vagas cadastradas.
+        /// </summary>
+        /// <param name="page">Número da página (padrão: 1)</param>
+        /// <param name="pageSize">Quantidade de itens por página (padrão: 10)</param>
+        /// <returns>Página de vagas</returns>
         [HttpGet]
         public async Task<ActionResult<PagedHateoasDTO<Vaga>>> GetVagas([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
@@ -43,6 +49,10 @@ namespace GeoSense.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Retorna os dados de uma vaga por ID.
+        /// </summary>
+        /// <param name="id">ID da vaga</param>
         [HttpGet("{id}")]
         public async Task<ActionResult<Vaga>> GetVaga(long id)
         {
@@ -54,6 +64,10 @@ namespace GeoSense.API.Controllers
             return vaga;
         }
 
+        /// <summary>
+        /// Cadastra uma nova vaga.
+        /// </summary>
+        /// <param name="dto">Dados da nova vaga</param>
         [HttpPost]
         public async Task<ActionResult<Vaga>> PostVaga(VagaDTO dto)
         {
@@ -68,6 +82,11 @@ namespace GeoSense.API.Controllers
             return CreatedAtAction(nameof(GetVaga), new { id = novaVaga.Id }, novaVaga);
         }
 
+        /// <summary>
+        /// Atualiza os dados de uma vaga existente.
+        /// </summary>
+        /// <param name="id">ID da vaga</param>
+        /// <param name="dto">Dados para atualização</param>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVaga(long id, VagaDTO dto)
         {
@@ -84,6 +103,10 @@ namespace GeoSense.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Exclui uma vaga do sistema.
+        /// </summary>
+        /// <param name="id">ID da vaga</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVaga(long id)
         {
