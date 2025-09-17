@@ -4,6 +4,7 @@ using GeoSense.API.Services;
 using GeoSense.Infrastructure.Repositories;
 using GeoSense.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 
 namespace GeoSense.API
@@ -32,7 +33,7 @@ namespace GeoSense.API
 
             builder.Services.AddEndpointsApiExplorer();
 
-            // Configuração Swagger personalizada
+            // Swagger customizado, incluindo exemplos de payloads
             builder.Services.AddSwaggerGen(options =>
             {
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -44,7 +45,11 @@ namespace GeoSense.API
                     Version = "v1",
                     Description = "API RESTful para gerenciamento de motos, vagas e pátios.\nEndpoints CRUD, paginação, HATEOAS e exemplos de payload."
                 });
+
+                options.ExampleFilters();
             });
+
+            builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
             var app = builder.Build();
 
