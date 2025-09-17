@@ -1,5 +1,4 @@
-﻿using Xunit;
-using GeoSense.API.Controllers;
+﻿using GeoSense.API.Controllers;
 using GeoSense.API.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using GeoSense.API.DTOs;

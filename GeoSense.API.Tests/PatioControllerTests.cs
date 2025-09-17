@@ -5,12 +5,23 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using GeoSense.API.DTOs;
 using GeoSense.API.Infrastructure.Persistence;
+using AutoMapper;
+using GeoSense.API.AutoMapper;
 using System.Threading.Tasks;
 
 namespace GeoSense.API.Tests
 {
     public class PatioControllerTests
     {
+        private static IMapper CreateMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+            });
+            return config.CreateMapper();
+        }
+
         [Fact]
         public async Task PostPatio_DeveRetornarCreated()
         {
@@ -19,7 +30,8 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
-            var controller = new PatioController(context);
+            var mapper = CreateMapper();
+            var controller = new PatioController(context, mapper);
 
             var dto = new PatioDTO { Id = 0 };
 
@@ -36,7 +48,8 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
-            var controller = new PatioController(context);
+            var mapper = CreateMapper();
+            var controller = new PatioController(context, mapper);
 
             var result = await controller.GetPatio(999);
 

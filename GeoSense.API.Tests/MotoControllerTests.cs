@@ -4,11 +4,22 @@ using GeoSense.API.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using GeoSense.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using GeoSense.API.AutoMapper;
 
 namespace GeoSense.API.Tests
 {
     public class MotoControllerTests
     {
+        private static IMapper CreateMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+            });
+            return config.CreateMapper();
+        }
+
         [Fact]
         public async Task PostMoto_DeveRetornarCreated()
         {
@@ -17,7 +28,8 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
-            var controller = new MotoController(context);
+            var mapper = CreateMapper();
+            var controller = new MotoController(context, mapper);
 
             var dto = new MotoDTO
             {
