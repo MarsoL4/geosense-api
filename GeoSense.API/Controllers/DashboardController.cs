@@ -16,6 +16,9 @@ namespace GeoSense.API.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Retorna dados agregados para o dashboard: totais de motos, vagas e problemas.
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetDashboardData()
         {
