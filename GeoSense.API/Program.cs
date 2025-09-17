@@ -1,9 +1,10 @@
-﻿using GeoSense.API.Infrastructure.Contexts;
-using GeoSense.API.Infrastructure.Mappings;
+﻿using GeoSense.API.AutoMapper;
+using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Services;
-using GeoSense.Infrastructure.Repositories.Interfaces;
 using GeoSense.Infrastructure.Repositories;
+using GeoSense.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace GeoSense.API
 {
@@ -19,8 +20,6 @@ namespace GeoSense.API
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             var connectionString = builder.Configuration.GetConnectionString("Oracle");
-
-            // Registra o DbContext com a conexão Oracle
             builder.Services.AddDbContext<GeoSenseContext>(options =>
                 options.UseOracle(connectionString));
 
@@ -32,7 +31,20 @@ namespace GeoSense.API
                 });
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            // Configuração Swagger personalizada
+            builder.Services.AddSwaggerGen(options =>
+            {
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename), true);
+
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "GeoSense API",
+                    Version = "v1",
+                    Description = "API RESTful para gerenciamento de motos, vagas e pátios.\nEndpoints CRUD, paginação, HATEOAS e exemplos de payload."
+                });
+            });
 
             var app = builder.Build();
 
