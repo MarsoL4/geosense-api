@@ -9,10 +9,8 @@ namespace GeoSense.API.Infrastructure.Persistence
         public int Numero { get; private set; }
         public TipoVaga Tipo { get; private set; }
         public StatusVaga Status { get; private set; }
-
-        // N...1 (muitas vagas pertencem a um pátio)
         public long PatioId { get; private set; }
-        public virtual Patio Patio { get; set; }
+        public virtual Patio? Patio { get; set; } // nullable para evitar warning
 
         protected Vaga() { }
 

@@ -36,12 +36,15 @@ namespace GeoSense.API.Tests
             var mapper = CreateMapper();
             var controller = new VagaController(context, mapper);
 
+            var patio = context.Patios.FirstOrDefault();
+            Assert.NotNull(patio);
+
             var dto = new VagaDTO
             {
                 Numero = 1,
                 Tipo = (int)TipoVaga.Reparo_Simples,
                 Status = (int)StatusVaga.LIVRE,
-                PatioId = context.Patios.FirstOrDefault().Id
+                PatioId = patio.Id
             };
 
             var result = await controller.PostVaga(dto);

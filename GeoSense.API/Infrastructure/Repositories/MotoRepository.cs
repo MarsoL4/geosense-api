@@ -21,7 +21,7 @@ namespace GeoSense.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Moto> ObterPorIdComVagaEDefeitosAsync(long id)
+        public async Task<Moto?> ObterPorIdComVagaEDefeitosAsync(long id)
         {
             return await _context.Motos
                 .Include(m => m.Vaga)

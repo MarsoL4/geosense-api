@@ -14,7 +14,7 @@ namespace GeoSense.API.Helpers
                 {
                     Rel = "self",
                     Method = "GET",
-                    Href = url.Action("Get" + resource, resource, new { page, pageSize })
+                    Href = url.Action("Get" + resource, resource, new { page, pageSize }) ?? string.Empty
                 }
             };
 
@@ -26,7 +26,7 @@ namespace GeoSense.API.Helpers
                 {
                     Rel = "prev",
                     Method = "GET",
-                    Href = url.Action("Get" + resource, resource, new { page = page - 1, pageSize })
+                    Href = url.Action("Get" + resource, resource, new { page = page - 1, pageSize }) ?? string.Empty
                 });
             }
 
@@ -36,7 +36,7 @@ namespace GeoSense.API.Helpers
                 {
                     Rel = "next",
                     Method = "GET",
-                    Href = url.Action("Get" + resource, resource, new { page = page + 1, pageSize })
+                    Href = url.Action("Get" + resource, resource, new { page = page + 1, pageSize }) ?? string.Empty
                 });
             }
 

@@ -7,8 +7,7 @@
         public long MotoId { get; set; }
         public long VagaId { get; set; }
         public long MecanicoResponsavelId { get; set; }
-        public Moto Moto { get; set; }
-        public Vaga Vaga { get; set; }
+        public Moto? Moto { get; set; }
+        public Vaga? Vaga { get; set; }
     }
-
 }

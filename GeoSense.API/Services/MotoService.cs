@@ -21,14 +21,14 @@ namespace GeoSense.API.Services
             return _mapper.Map<List<MotoDetalhesDTO>>(motos);
         }
 
-        public async Task<MotoDetalhesDTO> ObterPorIdAsync(long id)
+        public async Task<MotoDetalhesDTO?> ObterPorIdAsync(long id)
         {
             var moto = await _repo.ObterPorIdComVagaEDefeitosAsync(id);
             if (moto == null) return null;
 
             return new MotoDetalhesDTO
             {
-                Id = moto.Id.GetHashCode(), // Convert Guid to a long-compatible value using GetHashCode()
+                Id = moto.Id,
                 Modelo = moto.Modelo,
                 Placa = moto.Placa,
                 Chassi = moto.Chassi,

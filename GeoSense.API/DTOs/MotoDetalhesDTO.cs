@@ -5,34 +5,11 @@
     /// </summary>
     public class MotoDetalhesDTO
     {
-        /// <summary>
-        /// Identificador único da moto.
-        /// </summary>
         public long Id { get; set; }
-
-        /// <summary>
-        /// Modelo da moto.
-        /// </summary>
-        public string Modelo { get; set; }
-
-        /// <summary>
-        /// Placa da moto.
-        /// </summary>
-        public string Placa { get; set; }
-
-        /// <summary>
-        /// Chassi da moto.
-        /// </summary>
-        public string Chassi { get; set; }
-
-        /// <summary>
-        /// Problema identificado na moto.
-        /// </summary>
-        public string ProblemaIdentificado { get; set; }
-
-        /// <summary>
-        /// Id da vaga associada.
-        /// </summary>
+        public required string Modelo { get; set; }
+        public required string Placa { get; set; }
+        public required string Chassi { get; set; }
+        public required string ProblemaIdentificado { get; set; }
         public long VagaId { get; set; }
     }
 }
