@@ -4,7 +4,7 @@ using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Infrastructure.Persistence;
 using GeoSense.API.DTOs;
 using GeoSense.API.Helpers;
-using Swashbuckle.AspNetCore.Filters;
+using AutoMapper;
 
 namespace GeoSense.API.Controllers
 {
@@ -13,31 +13,32 @@ namespace GeoSense.API.Controllers
     public class PatioController : ControllerBase
     {
         private readonly GeoSenseContext _context;
+        private readonly IMapper _mapper;
 
-        public PatioController(GeoSenseContext context)
+        public PatioController(GeoSenseContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         /// <summary>
         /// Retorna uma lista paginada de pátios cadastrados.
         /// </summary>
-        /// <param name="page">Número da página (padrão: 1)</param>
-        /// <param name="pageSize">Quantidade de itens por página (padrão: 10)</param>
-        /// <returns>Página de pátios</returns>
         [HttpGet]
-        public async Task<ActionResult<PagedHateoasDTO<Patio>>> GetPatios([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<PagedHateoasDTO<PatioDTO>>> GetPatios([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             var query = _context.Patios.AsQueryable();
             var totalCount = await query.CountAsync();
-            var items = await query
+            var patios = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
+            var items = _mapper.Map<List<PatioDTO>>(patios);
+
             var links = HateoasHelper.GetPagedLinks(Url, "Patios", page, pageSize, totalCount);
 
-            var result = new PagedHateoasDTO<Patio>
+            var result = new PagedHateoasDTO<PatioDTO>
             {
                 Items = items,
                 TotalCount = totalCount,
@@ -52,36 +53,37 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Retorna os dados de um pátio por ID.
         /// </summary>
-        /// <param name="id">ID do pátio</param>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Patio>> GetPatio(long id)
+        public async Task<ActionResult<PatioDTO>> GetPatio(long id)
         {
             var patio = await _context.Patios.FindAsync(id);
             if (patio == null)
                 return NotFound();
-            return patio;
+
+            var dto = _mapper.Map<PatioDTO>(patio);
+            return Ok(dto);
         }
 
         /// <summary>
         /// Cadastra um novo pátio.
         /// </summary>
         [HttpPost]
-        [SwaggerRequestExample(typeof(PatioDTO), typeof(GeoSense.API.Examples.PatioDTOExample))]
-        public async Task<ActionResult<Patio>> PostPatio(PatioDTO dto)
+        public async Task<ActionResult<PatioDTO>> PostPatio(PatioDTO dto)
         {
             var novoPatio = new Patio();
             _context.Patios.Add(novoPatio);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetPatio), new { id = novoPatio.Id }, novoPatio);
+
+            var patioCompleto = await _context.Patios.FindAsync(novoPatio.Id);
+            var resultDto = _mapper.Map<PatioDTO>(patioCompleto);
+
+            return CreatedAtAction(nameof(GetPatio), new { id = novoPatio.Id }, resultDto);
         }
 
         /// <summary>
         /// Atualiza os dados de um pátio existente.
         /// </summary>
-        /// <param name="id">ID do pátio</param>
-        /// <param name="dto">Dados para atualização</param>
         [HttpPut("{id}")]
-        [SwaggerRequestExample(typeof(PatioDTO), typeof(GeoSense.API.Examples.PatioDTOExample))]
         public async Task<IActionResult> PutPatio(long id, PatioDTO dto)
         {
             var patio = await _context.Patios.FindAsync(id);
@@ -95,7 +97,6 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Exclui um pátio do sistema.
         /// </summary>
-        /// <param name="id">ID do pátio</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePatio(long id)
         {

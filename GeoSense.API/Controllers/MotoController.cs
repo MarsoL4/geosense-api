@@ -4,6 +4,7 @@ using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Infrastructure.Persistence;
 using GeoSense.API.DTOs;
 using GeoSense.API.Helpers;
+using AutoMapper;
 
 namespace GeoSense.API.Controllers
 {
@@ -12,31 +13,32 @@ namespace GeoSense.API.Controllers
     public class MotoController : ControllerBase
     {
         private readonly GeoSenseContext _context;
+        private readonly IMapper _mapper;
 
-        public MotoController(GeoSenseContext context)
+        public MotoController(GeoSenseContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         /// <summary>
         /// Retorna uma lista paginada de motos cadastradas.
         /// </summary>
-        /// <param name="page">Número da página (padrão: 1)</param>
-        /// <param name="pageSize">Quantidade de itens por página (padrão: 10)</param>
-        /// <returns>Página de motos</returns>
         [HttpGet]
-        public async Task<ActionResult<PagedHateoasDTO<Moto>>> GetMotos([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<PagedHateoasDTO<MotoListagemDTO>>> GetMotos([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var query = _context.Motos.Include(m => m.Vaga).AsQueryable();
+            var query = _context.Motos.Include(m => m.Vaga);
             var totalCount = await query.CountAsync();
-            var items = await query
+            var motos = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
+            var items = _mapper.Map<List<MotoListagemDTO>>(motos);
+
             var links = HateoasHelper.GetPagedLinks(Url, "Motos", page, pageSize, totalCount);
 
-            var result = new PagedHateoasDTO<Moto>
+            var result = new PagedHateoasDTO<MotoListagemDTO>
             {
                 Items = items,
                 TotalCount = totalCount,
@@ -51,12 +53,12 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Retorna os dados de uma moto por ID.
         /// </summary>
-        /// <param name="id">ID da moto</param>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Moto>> GetMoto(long id)
+        public async Task<ActionResult<MotoDetalhesDTO>> GetMoto(long id)
         {
             var moto = await _context.Motos
                 .Include(m => m.Vaga)
+                .Include(m => m.Defeitos)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (moto == null)
@@ -64,14 +66,13 @@ namespace GeoSense.API.Controllers
                 return NotFound();
             }
 
-            return moto;
+            var dto = _mapper.Map<MotoDetalhesDTO>(moto);
+            return Ok(dto);
         }
 
         /// <summary>
         /// Atualiza os dados de uma moto existente.
         /// </summary>
-        /// <param name="id">ID da moto</param>
-        /// <param name="dto">Dados para atualização</param>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMoto(long id, MotoDTO dto)
         {
@@ -92,9 +93,8 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Cadastra uma nova moto.
         /// </summary>
-        /// <param name="dto">Dados da nova moto</param>
         [HttpPost]
-        public async Task<ActionResult<Moto>> PostMoto(MotoDTO dto)
+        public async Task<ActionResult<MotoDetalhesDTO>> PostMoto(MotoDTO dto)
         {
             var novaMoto = new Moto
             {
@@ -108,13 +108,19 @@ namespace GeoSense.API.Controllers
             _context.Motos.Add(novaMoto);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetMoto), new { id = novaMoto.Id }, novaMoto);
+            var motoCompleta = await _context.Motos
+                .Include(m => m.Vaga)
+                .Include(m => m.Defeitos)
+                .FirstOrDefaultAsync(m => m.Id == novaMoto.Id);
+
+            var resultDto = _mapper.Map<MotoDetalhesDTO>(motoCompleta);
+
+            return CreatedAtAction(nameof(GetMoto), new { id = novaMoto.Id }, resultDto);
         }
 
         /// <summary>
         /// Exclui uma moto do sistema.
         /// </summary>
-        /// <param name="id">ID da moto</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMoto(long id)
         {
