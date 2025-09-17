@@ -18,6 +18,12 @@ namespace GeoSense.API.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Retorna uma lista paginada de motos cadastradas.
+        /// </summary>
+        /// <param name="page">Número da página (padrão: 1)</param>
+        /// <param name="pageSize">Quantidade de itens por página (padrão: 10)</param>
+        /// <returns>Página de motos</returns>
         [HttpGet]
         public async Task<ActionResult<PagedHateoasDTO<Moto>>> GetMotos([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
@@ -42,6 +48,10 @@ namespace GeoSense.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Retorna os dados de uma moto por ID.
+        /// </summary>
+        /// <param name="id">ID da moto</param>
         [HttpGet("{id}")]
         public async Task<ActionResult<Moto>> GetMoto(long id)
         {
@@ -57,6 +67,11 @@ namespace GeoSense.API.Controllers
             return moto;
         }
 
+        /// <summary>
+        /// Atualiza os dados de uma moto existente.
+        /// </summary>
+        /// <param name="id">ID da moto</param>
+        /// <param name="dto">Dados para atualização</param>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMoto(long id, MotoDTO dto)
         {
@@ -74,6 +89,10 @@ namespace GeoSense.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Cadastra uma nova moto.
+        /// </summary>
+        /// <param name="dto">Dados da nova moto</param>
         [HttpPost]
         public async Task<ActionResult<Moto>> PostMoto(MotoDTO dto)
         {
@@ -92,6 +111,10 @@ namespace GeoSense.API.Controllers
             return CreatedAtAction(nameof(GetMoto), new { id = novaMoto.Id }, novaMoto);
         }
 
+        /// <summary>
+        /// Exclui uma moto do sistema.
+        /// </summary>
+        /// <param name="id">ID da moto</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMoto(long id)
         {
