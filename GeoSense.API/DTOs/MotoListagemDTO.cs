@@ -21,8 +21,8 @@
         public string Status { get; set; }
 
         /// <summary>
-        /// Tipo (cliente) da vaga associada.
+        /// Tipo da vaga associada.
         /// </summary>
-        public string Cliente { get; set; }
+        public string TipoVaga { get; set; }
     }
 }
