@@ -1,7 +1,7 @@
 ﻿namespace GeoSense.API.DTOs
 {
     /// <summary>
-    /// Representa os detalhes completos de uma Moto, incluindo vaga e defeitos.
+    /// Representa os dados de detalhe de uma Moto.
     /// </summary>
     public class MotoDetalhesDTO
     {
@@ -31,18 +31,8 @@
         public string ProblemaIdentificado { get; set; }
 
         /// <summary>
-        /// Status da vaga associada.
+        /// Id da vaga associada.
         /// </summary>
-        public string VagaStatus { get; set; }
-
-        /// <summary>
-        /// Tipo da vaga associada.
-        /// </summary>
-        public string VagaTipo { get; set; }
-
-        /// <summary>
-        /// Lista de defeitos associados à moto.
-        /// </summary>
-        public List<string> Defeitos { get; set; }
+        public long VagaId { get; set; }
     }
 }

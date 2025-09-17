@@ -25,7 +25,7 @@ namespace GeoSense.API.Controllers
         /// Retorna uma lista paginada de motos cadastradas.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<PagedHateoasDTO<MotoListagemDTO>>> GetMotos([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<PagedHateoasDTO<MotoDetalhesDTO>>> GetMotos([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             var query = _context.Motos.Include(m => m.Vaga);
             var totalCount = await query.CountAsync();
@@ -34,11 +34,11 @@ namespace GeoSense.API.Controllers
                 .Take(pageSize)
                 .ToListAsync();
 
-            var items = _mapper.Map<List<MotoListagemDTO>>(motos);
+            var items = _mapper.Map<List<MotoDetalhesDTO>>(motos);
 
             var links = HateoasHelper.GetPagedLinks(Url, "Motos", page, pageSize, totalCount);
 
-            var result = new PagedHateoasDTO<MotoListagemDTO>
+            var result = new PagedHateoasDTO<MotoDetalhesDTO>
             {
                 Items = items,
                 TotalCount = totalCount,
@@ -57,8 +57,6 @@ namespace GeoSense.API.Controllers
         public async Task<ActionResult<MotoDetalhesDTO>> GetMoto(long id)
         {
             var moto = await _context.Motos
-                .Include(m => m.Vaga)
-                .Include(m => m.Defeitos)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (moto == null)
@@ -109,8 +107,6 @@ namespace GeoSense.API.Controllers
             await _context.SaveChangesAsync();
 
             var motoCompleta = await _context.Motos
-                .Include(m => m.Vaga)
-                .Include(m => m.Defeitos)
                 .FirstOrDefaultAsync(m => m.Id == novaMoto.Id);
 
             var resultDto = _mapper.Map<MotoDetalhesDTO>(motoCompleta);

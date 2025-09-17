@@ -20,9 +20,7 @@ namespace GeoSense.API.AutoMapper
                 .ForMember(dest => dest.Placa, opt => opt.MapFrom(src => src.Placa))
                 .ForMember(dest => dest.Chassi, opt => opt.MapFrom(src => src.Chassi))
                 .ForMember(dest => dest.ProblemaIdentificado, opt => opt.MapFrom(src => src.ProblemaIdentificado))
-                .ForMember(dest => dest.VagaStatus, opt => opt.MapFrom(src => src.Vaga.Status.ToString()))
-                .ForMember(dest => dest.VagaTipo, opt => opt.MapFrom(src => src.Vaga.Tipo.ToString()))
-                .ForMember(dest => dest.Defeitos, opt => opt.MapFrom(src => src.Defeitos.Select(d => d.Descricao).ToList()));
+                .ForMember(dest => dest.VagaId, opt => opt.MapFrom(src => src.VagaId));
 
             CreateMap<Vaga, VagaDTO>()
                 .ForMember(dest => dest.Numero, opt => opt.MapFrom(src => src.Numero))
