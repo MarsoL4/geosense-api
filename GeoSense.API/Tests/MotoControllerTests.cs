@@ -4,7 +4,6 @@ using GeoSense.API.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using GeoSense.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace GeoSense.API.Tests
 {
