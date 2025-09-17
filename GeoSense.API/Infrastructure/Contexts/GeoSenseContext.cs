@@ -15,6 +15,7 @@ namespace GeoSense.API.Infrastructure.Contexts
         public DbSet<Vaga> Vagas { get; set; }
         public DbSet<Defeito> Defeitos { get; set; }
         public DbSet<AlocacaoMoto> AlocacoesMoto { get; set; }
+        public DbSet<Patio> Patios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
