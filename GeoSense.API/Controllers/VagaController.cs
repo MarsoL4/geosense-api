@@ -5,6 +5,7 @@ using GeoSense.API.Infrastructure.Persistence;
 using GeoSense.API.DTOs;
 using GeoSense.API.Domain.Enums;
 using GeoSense.API.Helpers;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace GeoSense.API.Controllers
 {
@@ -69,6 +70,7 @@ namespace GeoSense.API.Controllers
         /// </summary>
         /// <param name="dto">Dados da nova vaga</param>
         [HttpPost]
+        [SwaggerRequestExample(typeof(VagaDTO), typeof(GeoSense.API.Examples.VagaDTOExample))]
         public async Task<ActionResult<Vaga>> PostVaga(VagaDTO dto)
         {
             var novaVaga = new Vaga(dto.Numero, dto.PatioId);
@@ -88,6 +90,7 @@ namespace GeoSense.API.Controllers
         /// <param name="id">ID da vaga</param>
         /// <param name="dto">Dados para atualização</param>
         [HttpPut("{id}")]
+        [SwaggerRequestExample(typeof(VagaDTO), typeof(GeoSense.API.Examples.VagaDTOExample))]
         public async Task<IActionResult> PutVaga(long id, VagaDTO dto)
         {
             var vaga = await _context.Vagas.FindAsync(id);

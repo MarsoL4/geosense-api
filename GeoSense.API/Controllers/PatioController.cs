@@ -4,6 +4,7 @@ using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Infrastructure.Persistence;
 using GeoSense.API.DTOs;
 using GeoSense.API.Helpers;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace GeoSense.API.Controllers
 {
@@ -65,7 +66,8 @@ namespace GeoSense.API.Controllers
         /// Cadastra um novo pátio.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Patio>> PostPatio()
+        [SwaggerRequestExample(typeof(PatioDTO), typeof(GeoSense.API.Examples.PatioDTOExample))]
+        public async Task<ActionResult<Patio>> PostPatio(PatioDTO dto)
         {
             var novoPatio = new Patio();
             _context.Patios.Add(novoPatio);
@@ -77,8 +79,10 @@ namespace GeoSense.API.Controllers
         /// Atualiza os dados de um pátio existente.
         /// </summary>
         /// <param name="id">ID do pátio</param>
+        /// <param name="dto">Dados para atualização</param>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPatio(long id)
+        [SwaggerRequestExample(typeof(PatioDTO), typeof(GeoSense.API.Examples.PatioDTOExample))]
+        public async Task<IActionResult> PutPatio(long id, PatioDTO dto)
         {
             var patio = await _context.Patios.FindAsync(id);
             if (patio == null)
