@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using GeoSense.API.Domain.Enums;
 using GeoSense.API.DTOs;
 using GeoSense.Infrastructure.Repositories.Interfaces;
 
@@ -16,10 +15,10 @@ namespace GeoSense.API.Services
             _mapper = mapper;
         }
 
-        public async Task<List<MotoListagemDTO>> ObterTodasAsync()
+        public async Task<List<MotoDetalhesDTO>> ObterTodasAsync()
         {
             var motos = await _repo.ObterTodasAsync();
-            return _mapper.Map<List<MotoListagemDTO>>(motos);
+            return _mapper.Map<List<MotoDetalhesDTO>>(motos);
         }
 
         public async Task<MotoDetalhesDTO> ObterPorIdAsync(long id)
@@ -34,9 +33,7 @@ namespace GeoSense.API.Services
                 Placa = moto.Placa,
                 Chassi = moto.Chassi,
                 ProblemaIdentificado = moto.ProblemaIdentificado,
-                VagaStatus = moto.Vaga?.Status.ToString(),
-                VagaTipo = moto.Vaga?.Tipo.ToString(),
-                Defeitos = moto.Defeitos?.Select(d => d.Descricao).ToList() ?? new List<string>()
+                VagaId = moto.VagaId
             };
         }
     }
