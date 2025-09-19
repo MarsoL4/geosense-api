@@ -78,6 +78,27 @@ namespace GeoSense.API.Controllers
             if (moto == null)
                 return NotFound();
 
+            // Validação: uma moto por vaga
+            var vagaOcupada = await _context.Motos
+                .AnyAsync(m => m.VagaId == dto.VagaId && m.Id != id);
+
+            if (vagaOcupada)
+                return BadRequest("Esta vaga já está ocupada por outra moto.");
+
+            // Validação: placa única
+            var placaExiste = await _context.Motos
+                .AnyAsync(m => m.Placa == dto.Placa && m.Id != id);
+
+            if (placaExiste)
+                return BadRequest("Já existe uma moto com essa placa.");
+
+            // Validação: chassi único
+            var chassiExiste = await _context.Motos
+                .AnyAsync(m => m.Chassi == dto.Chassi && m.Id != id);
+
+            if (chassiExiste)
+                return BadRequest("Já existe uma moto com esse chassi.");
+
             moto.Modelo = dto.Modelo;
             moto.Placa = dto.Placa;
             moto.Chassi = dto.Chassi;
@@ -94,6 +115,27 @@ namespace GeoSense.API.Controllers
         [HttpPost]
         public async Task<ActionResult<MotoDetalhesDTO>> PostMoto(MotoDTO dto)
         {
+            // Validação: só pode existir uma moto por vaga
+            var vagaOcupada = await _context.Motos
+                .AnyAsync(m => m.VagaId == dto.VagaId);
+
+            if (vagaOcupada)
+                return BadRequest("Esta vaga já está ocupada por outra moto.");
+
+            // Validação: placa única
+            var placaExiste = await _context.Motos
+                .AnyAsync(m => m.Placa == dto.Placa);
+
+            if (placaExiste)
+                return BadRequest("Já existe uma moto com essa placa.");
+
+            // Validação: chassi único
+            var chassiExiste = await _context.Motos
+                .AnyAsync(m => m.Chassi == dto.Chassi);
+
+            if (chassiExiste)
+                return BadRequest("Já existe uma moto com esse chassi.");
+
             var novaMoto = new Moto
             {
                 Modelo = dto.Modelo,
