@@ -24,6 +24,11 @@ namespace GeoSense.API.Infrastructure.Mappings
                 .WithMany(v => v.Motos)
                 .HasForeignKey(m => m.VagaId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Restrições de unicidade
+            builder.HasIndex(m => m.Placa).IsUnique();
+            builder.HasIndex(m => m.Chassi).IsUnique();
+            builder.HasIndex(m => m.VagaId).IsUnique();
         }
     }
 }
