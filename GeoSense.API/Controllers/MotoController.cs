@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using GeoSense.API.Infrastructure.Contexts;
-using GeoSense.API.Infrastructure.Persistence;
+﻿using AutoMapper;
 using GeoSense.API.DTOs;
 using GeoSense.API.Helpers;
-using AutoMapper;
+using GeoSense.API.Infrastructure.Contexts;
+using GeoSense.API.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace GeoSense.API.Controllers
 {
@@ -24,7 +26,14 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Retorna uma lista paginada de motos cadastradas.
         /// </summary>
+        /// <remarks>
+        /// Retorna uma lista de motos, podendo utilizar paginação via parâmetros <b>page</b> e <b>pageSize</b>.
+        /// </remarks>
+        /// <param name="page">Número da página (padrão: 1)</param>
+        /// <param name="pageSize">Quantidade de itens por página (padrão: 10)</param>
+        /// <response code="200">Lista paginada de motos</response>
         [HttpGet]
+        [SwaggerResponse(200, "Lista paginada de motos cadastradas", typeof(PagedHateoasDTO<MotoDetalhesDTO>))]
         public async Task<ActionResult<PagedHateoasDTO<MotoDetalhesDTO>>> GetMotos([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             var query = _context.Motos.Include(m => m.Vaga);
@@ -53,7 +62,15 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Retorna os dados de uma moto por ID.
         /// </summary>
+        /// <remarks>
+        /// Retorna os detalhes de uma moto específica a partir do seu identificador.
+        /// </remarks>
+        /// <param name="id">Identificador único da moto</param>
+        /// <response code="200">Moto encontrada</response>
+        /// <response code="404">Moto não encontrada</response>
         [HttpGet("{id}")]
+        [SwaggerResponse(200, "Moto encontrada", typeof(MotoDetalhesDTO))]
+        [SwaggerResponse(404, "Moto não encontrada")]
         public async Task<ActionResult<MotoDetalhesDTO>> GetMoto(long id)
         {
             var moto = await _context.Motos
@@ -71,28 +88,37 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Atualiza os dados de uma moto existente.
         /// </summary>
+        /// <remarks>
+        /// Atualiza os dados da moto informada pelo ID. O corpo da requisição deve conter o modelo <see cref="MotoDTO"/>.
+        /// </remarks>
+        /// <param name="id">Identificador único da moto</param>
+        /// <param name="dto">Dados da moto a serem atualizados</param>
+        /// <response code="204">Moto atualizada com sucesso</response>
+        /// <response code="400">Alguma restrição de negócio foi violada</response>
+        /// <response code="404">Moto não encontrada</response>
         [HttpPut("{id}")]
+        [SwaggerRequestExample(typeof(MotoDTO), typeof(GeoSense.API.Examples.MotoDTOExample))]
+        [SwaggerResponse(204, "Moto atualizada com sucesso")]
+        [SwaggerResponse(400, "Restrição de negócio violada")]
+        [SwaggerResponse(404, "Moto não encontrada")]
         public async Task<IActionResult> PutMoto(long id, MotoDTO dto)
         {
             var moto = await _context.Motos.FindAsync(id);
             if (moto == null)
                 return NotFound();
 
-            // Validação: uma moto por vaga
             var vagaOcupada = await _context.Motos
                 .AnyAsync(m => m.VagaId == dto.VagaId && m.Id != id);
 
             if (vagaOcupada)
                 return BadRequest("Esta vaga já está ocupada por outra moto.");
 
-            // Validação: placa única
             var placaExiste = await _context.Motos
                 .AnyAsync(m => m.Placa == dto.Placa && m.Id != id);
 
             if (placaExiste)
                 return BadRequest("Já existe uma moto com essa placa.");
 
-            // Validação: chassi único
             var chassiExiste = await _context.Motos
                 .AnyAsync(m => m.Chassi == dto.Chassi && m.Id != id);
 
@@ -112,24 +138,30 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Cadastra uma nova moto.
         /// </summary>
+        /// <remarks>
+        /// Cadastra uma nova moto no sistema. O corpo da requisição deve conter o modelo <see cref="MotoDTO"/>.
+        /// </remarks>
+        /// <param name="dto">Dados da nova moto</param>
+        /// <response code="201">Moto criada com sucesso</response>
+        /// <response code="400">Alguma restrição de negócio foi violada</response>
         [HttpPost]
+        [SwaggerRequestExample(typeof(MotoDTO), typeof(GeoSense.API.Examples.MotoDTOExample))]
+        [SwaggerResponse(201, "Moto criada com sucesso", typeof(MotoDetalhesDTO))]
+        [SwaggerResponse(400, "Restrição de negócio violada")]
         public async Task<ActionResult<MotoDetalhesDTO>> PostMoto(MotoDTO dto)
         {
-            // Validação: só pode existir uma moto por vaga
             var vagaOcupada = await _context.Motos
                 .AnyAsync(m => m.VagaId == dto.VagaId);
 
             if (vagaOcupada)
                 return BadRequest("Esta vaga já está ocupada por outra moto.");
 
-            // Validação: placa única
             var placaExiste = await _context.Motos
                 .AnyAsync(m => m.Placa == dto.Placa);
 
             if (placaExiste)
                 return BadRequest("Já existe uma moto com essa placa.");
 
-            // Validação: chassi único
             var chassiExiste = await _context.Motos
                 .AnyAsync(m => m.Chassi == dto.Chassi);
 
@@ -159,7 +191,15 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Exclui uma moto do sistema.
         /// </summary>
+        /// <remarks>
+        /// Remove a moto informada pelo ID.
+        /// </remarks>
+        /// <param name="id">Identificador único da moto</param>
+        /// <response code="204">Moto removida</response>
+        /// <response code="404">Moto não encontrada</response>
         [HttpDelete("{id}")]
+        [SwaggerResponse(204, "Moto removida com sucesso")]
+        [SwaggerResponse(404, "Moto não encontrada")]
         public async Task<IActionResult> DeleteMoto(long id)
         {
             var moto = await _context.Motos.FindAsync(id);

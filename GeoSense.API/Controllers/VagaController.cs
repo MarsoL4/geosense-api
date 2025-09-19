@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using GeoSense.API.Domain.Enums;
+using GeoSense.API.DTOs;
+using GeoSense.API.Helpers;
 using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Infrastructure.Persistence;
-using GeoSense.API.DTOs;
-using GeoSense.API.Domain.Enums;
-using GeoSense.API.Helpers;
-using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace GeoSense.API.Controllers
 {
@@ -25,7 +27,14 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Retorna uma lista paginada de vagas cadastradas.
         /// </summary>
+        /// <remarks>
+        /// Retorna uma lista de vagas, podendo utilizar paginação via parâmetros <b>page</b> e <b>pageSize</b>.
+        /// </remarks>
+        /// <param name="page">Número da página (padrão: 1)</param>
+        /// <param name="pageSize">Quantidade de itens por página (padrão: 10)</param>
+        /// <response code="200">Lista paginada de vagas</response>
         [HttpGet]
+        [SwaggerResponse(200, "Lista paginada de vagas cadastradas", typeof(PagedHateoasDTO<VagaDTO>))]
         public async Task<ActionResult<PagedHateoasDTO<VagaDTO>>> GetVagas([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             var query = _context.Vagas.AsQueryable();
@@ -54,7 +63,15 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Retorna os dados de uma vaga por ID.
         /// </summary>
+        /// <remarks>
+        /// Retorna os detalhes de uma vaga específica a partir do seu identificador.
+        /// </remarks>
+        /// <param name="id">Identificador único da vaga</param>
+        /// <response code="200">Vaga encontrada</response>
+        /// <response code="404">Vaga não encontrada</response>
         [HttpGet("{id}")]
+        [SwaggerResponse(200, "Vaga encontrada", typeof(VagaDTO))]
+        [SwaggerResponse(404, "Vaga não encontrada")]
         public async Task<ActionResult<VagaDTO>> GetVaga(long id)
         {
             var vaga = await _context.Vagas.FindAsync(id);
@@ -69,7 +86,14 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Cadastra uma nova vaga.
         /// </summary>
+        /// <remarks>
+        /// Cadastra uma nova vaga no sistema. O corpo da requisição deve conter o modelo <see cref="VagaDTO"/>.
+        /// </remarks>
+        /// <param name="dto">Dados da nova vaga</param>
+        /// <response code="201">Vaga criada com sucesso</response>
         [HttpPost]
+        [SwaggerRequestExample(typeof(VagaDTO), typeof(GeoSense.API.Examples.VagaDTOExample))]
+        [SwaggerResponse(201, "Vaga criada com sucesso", typeof(VagaDTO))]
         public async Task<ActionResult<VagaDTO>> PostVaga(VagaDTO dto)
         {
             var novaVaga = new Vaga(dto.Numero, dto.PatioId);
@@ -89,7 +113,17 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Atualiza os dados de uma vaga existente.
         /// </summary>
+        /// <remarks>
+        /// Atualiza os dados da vaga informada pelo ID. O corpo da requisição deve conter o modelo <see cref="VagaDTO"/>.
+        /// </remarks>
+        /// <param name="id">Identificador único da vaga</param>
+        /// <param name="dto">Dados da vaga a serem atualizados</param>
+        /// <response code="204">Vaga atualizada com sucesso</response>
+        /// <response code="404">Vaga não encontrada</response>
         [HttpPut("{id}")]
+        [SwaggerRequestExample(typeof(VagaDTO), typeof(GeoSense.API.Examples.VagaDTOExample))]
+        [SwaggerResponse(204, "Vaga atualizada com sucesso")]
+        [SwaggerResponse(404, "Vaga não encontrada")]
         public async Task<IActionResult> PutVaga(long id, VagaDTO dto)
         {
             var vaga = await _context.Vagas.FindAsync(id);
@@ -108,7 +142,15 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Exclui uma vaga do sistema.
         /// </summary>
+        /// <remarks>
+        /// Remove a vaga informada pelo ID.
+        /// </remarks>
+        /// <param name="id">Identificador único da vaga</param>
+        /// <response code="204">Vaga removida</response>
+        /// <response code="404">Vaga não encontrada</response>
         [HttpDelete("{id}")]
+        [SwaggerResponse(204, "Vaga removida com sucesso")]
+        [SwaggerResponse(404, "Vaga não encontrada")]
         public async Task<IActionResult> DeleteVaga(long id)
         {
             var vaga = await _context.Vagas.FindAsync(id);
