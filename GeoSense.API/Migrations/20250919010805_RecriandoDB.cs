@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GeoSense.API.Migrations
 {
     /// <inheritdoc />
-    public partial class RecreatingDB : Migration
+    public partial class RecriandoDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -133,9 +133,22 @@ namespace GeoSense.API.Migrations
                 column: "MOTO_ID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MOTO_CHASSI",
+                table: "MOTO",
+                column: "CHASSI",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MOTO_PLACA",
+                table: "MOTO",
+                column: "PLACA",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MOTO_VAGA_ID",
                 table: "MOTO",
-                column: "VAGA_ID");
+                column: "VAGA_ID",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_VAGA_PATIO_ID",

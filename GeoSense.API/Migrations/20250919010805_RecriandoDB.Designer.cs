@@ -12,8 +12,8 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace GeoSense.API.Migrations
 {
     [DbContext(typeof(GeoSenseContext))]
-    [Migration("20250919005939_AddUniqueConstraintsToMoto")]
-    partial class AddUniqueConstraintsToMoto
+    [Migration("20250919010805_RecriandoDB")]
+    partial class RecriandoDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
