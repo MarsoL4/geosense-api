@@ -12,16 +12,10 @@ namespace GeoSense.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MotoController : ControllerBase
+    public class MotoController(GeoSenseContext context, IMapper mapper) : ControllerBase
     {
-        private readonly GeoSenseContext _context;
-        private readonly IMapper _mapper;
-
-        public MotoController(GeoSenseContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+        private readonly GeoSenseContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
         /// <summary>
         /// Retorna uma lista paginada de motos cadastradas.
@@ -210,11 +204,6 @@ namespace GeoSense.API.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool MotoExists(long id)
-        {
-            return _context.Motos.Any(e => e.Id == id);
         }
     }
 }

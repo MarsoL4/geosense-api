@@ -1,4 +1,4 @@
-﻿﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Domain.Enums;
@@ -8,14 +8,9 @@ namespace GeoSense.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DashboardController : ControllerBase
+    public class DashboardController(GeoSenseContext context) : ControllerBase
     {
-        private readonly GeoSenseContext _context;
-
-        public DashboardController(GeoSenseContext context)
-        {
-            _context = context;
-        }
+        private readonly GeoSenseContext _context = context;
 
         /// <summary>
         /// Retorna dados agregados para o dashboard: totais de motos, vagas e problemas.

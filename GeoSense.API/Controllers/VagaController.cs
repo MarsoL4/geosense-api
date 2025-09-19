@@ -13,16 +13,10 @@ namespace GeoSense.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VagaController : ControllerBase
+    public class VagaController(GeoSenseContext context, IMapper mapper) : ControllerBase
     {
-        private readonly GeoSenseContext _context;
-        private readonly IMapper _mapper;
-
-        public VagaController(GeoSenseContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+        private readonly GeoSenseContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
         /// <summary>
         /// Retorna uma lista paginada de vagas cadastradas.
