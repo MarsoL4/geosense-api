@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GeoSense.API.DTOs;
 using GeoSense.API.Infrastructure.Persistence;
+using GeoSense.API.Domain.Enums;
 
 namespace GeoSense.API.AutoMapper
 {
@@ -24,6 +25,16 @@ namespace GeoSense.API.AutoMapper
 
             CreateMap<Patio, PatioDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+
+            CreateMap<Usuario, UsuarioDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.Senha, opt => opt.MapFrom(src => src.Senha))
+                .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => (int)src.Tipo));
+
+            CreateMap<UsuarioDTO, Usuario>()
+                .ConstructUsing(dto => new Usuario(dto.Id, dto.Nome, dto.Email, dto.Senha, (TipoUsuario)dto.Tipo));
         }
     }
 }

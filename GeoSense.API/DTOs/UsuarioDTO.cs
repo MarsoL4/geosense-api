@@ -1,0 +1,14 @@
+﻿namespace GeoSense.API.DTOs
+{
+    /// <summary>
+    /// Representa os dados necessários para cadastrar ou atualizar um Usuário.
+    /// </summary>
+    public class UsuarioDTO
+    {
+        public long Id { get; set; }
+        public required string Nome { get; set; }
+        public required string Email { get; set; }
+        public required string Senha { get; set; }
+        public int Tipo { get; set; } // int para facilitar o mapeamento do enum
+    }
+}
