@@ -18,7 +18,7 @@ namespace GeoSense.API
             builder.Services.AddScoped<IMotoRepository, MotoRepository>();
             builder.Services.AddScoped<MotoService>();
 
-            builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             var connectionString = builder.Configuration.GetConnectionString("Oracle");
             builder.Services.AddDbContext<GeoSenseContext>(options =>
