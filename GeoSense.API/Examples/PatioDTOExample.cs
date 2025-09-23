@@ -9,7 +9,7 @@ namespace GeoSense.API.Examples
         {
             return new PatioDTO
             {
-                Id = 1
+                Nome = "Pátio Central"
             };
         }
     }

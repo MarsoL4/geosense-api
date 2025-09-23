@@ -18,26 +18,20 @@ namespace GeoSense.API.Controllers
         private readonly IMapper _mapper = mapper;
 
         /// <summary>
-        /// Retorna uma lista paginada de pátios cadastrados.
+        /// Retorna uma lista paginada de pátios cadastrados (apenas dados simples).
         /// </summary>
-        /// <remarks>
-        /// Retorna uma lista de pátios, podendo utilizar paginação via parâmetros <b>page</b> e <b>pageSize</b>.
-        /// </remarks>
-        /// <param name="page">Número da página (padrão: 1)</param>
-        /// <param name="pageSize">Quantidade de itens por página (padrão: 10)</param>
-        /// <response code="200">Lista paginada de pátios</response>
         [HttpGet]
         [SwaggerResponse(200, "Lista paginada de pátios cadastrados", typeof(PagedHateoasDTO<PatioDTO>))]
         public async Task<ActionResult<PagedHateoasDTO<PatioDTO>>> GetPatios([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var query = _context.Patios.AsQueryable();
+            var query = _context.Patios.AsNoTracking();
             var totalCount = await query.CountAsync();
             var patios = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            var items = _mapper.Map<List<PatioDTO>>(patios);
+            var items = patios.Select(x => new PatioDTO { Id = x.Id, Nome = x.Nome }).ToList();
 
             var links = HateoasHelper.GetPagedLinks(Url, "Patios", page, pageSize, totalCount);
 
@@ -54,46 +48,50 @@ namespace GeoSense.API.Controllers
         }
 
         /// <summary>
-        /// Retorna os dados de um pátio por ID.
+        /// Retorna os dados de um pátio por ID, incluindo suas vagas.
         /// </summary>
-        /// <remarks>
-        /// Retorna os detalhes de um pátio específico a partir do seu identificador.
-        /// </remarks>
-        /// <param name="id">Identificador único do pátio</param>
-        /// <response code="200">Pátio encontrado</response>
-        /// <response code="404">Pátio não encontrado</response>
         [HttpGet("{id}")]
-        [SwaggerResponse(200, "Pátio encontrado", typeof(PatioDTO))]
+        [SwaggerResponse(200, "Pátio encontrado", typeof(PatioDetalhesDTO))]
         [SwaggerResponse(404, "Pátio não encontrado")]
-        public async Task<ActionResult<PatioDTO>> GetPatio(long id)
+        public async Task<ActionResult<PatioDetalhesDTO>> GetPatio(long id)
         {
-            var patio = await _context.Patios.FindAsync(id);
+            var patio = await _context.Patios
+                .Include(p => p.Vagas)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (patio == null)
                 return NotFound();
 
-            var dto = _mapper.Map<PatioDTO>(patio);
+            var dto = new PatioDetalhesDTO
+            {
+                Id = patio.Id,
+                Nome = patio.Nome,
+                Vagas = [.. patio.Vagas.Select(v => new VagaDTO
+                {
+                    Numero = v.Numero,
+                    Tipo = (int)v.Tipo,
+                    Status = (int)v.Status,
+                    PatioId = v.PatioId
+                })]
+            };
+
             return Ok(dto);
         }
 
         /// <summary>
         /// Cadastra um novo pátio.
         /// </summary>
-        /// <remarks>
-        /// Cadastra um novo pátio no sistema. O corpo da requisição deve conter o modelo <see cref="PatioDTO"/>.
-        /// </remarks>
-        /// <param name="_dto">Dados do novo pátio</param>
-        /// <response code="201">Pátio criado com sucesso</response>
         [HttpPost]
         [SwaggerRequestExample(typeof(PatioDTO), typeof(GeoSense.API.Examples.PatioDTOExample))]
         [SwaggerResponse(201, "Pátio criado com sucesso", typeof(PatioDTO))]
         public async Task<ActionResult<PatioDTO>> PostPatio(PatioDTO _dto)
         {
-            var novoPatio = new Patio();
+            var novoPatio = new Patio { Nome = _dto.Nome };
             _context.Patios.Add(novoPatio);
             await _context.SaveChangesAsync();
 
             var patioCompleto = await _context.Patios.FindAsync(novoPatio.Id);
-            var resultDto = _mapper.Map<PatioDTO>(patioCompleto);
+            var resultDto = new PatioDTO { Id = patioCompleto!.Id, Nome = patioCompleto.Nome };
 
             return CreatedAtAction(nameof(GetPatio), new { id = novoPatio.Id }, resultDto);
         }
@@ -101,13 +99,6 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Atualiza os dados de um pátio existente.
         /// </summary>
-        /// <remarks>
-        /// Atualiza os dados do pátio informado pelo ID. O corpo da requisição deve conter o modelo <see cref="PatioDTO"/>.
-        /// </remarks>
-        /// <param name="id">Identificador único do pátio</param>
-        /// <param name="_dto">Dados do pátio a serem atualizados</param>
-        /// <response code="204">Pátio atualizado com sucesso</response>
-        /// <response code="404">Pátio não encontrado</response>
         [HttpPut("{id}")]
         [SwaggerRequestExample(typeof(PatioDTO), typeof(GeoSense.API.Examples.PatioDTOExample))]
         [SwaggerResponse(204, "Pátio atualizado com sucesso")]
@@ -118,6 +109,7 @@ namespace GeoSense.API.Controllers
             if (patio == null)
                 return NotFound();
 
+            patio.Nome = _dto.Nome;
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -125,12 +117,6 @@ namespace GeoSense.API.Controllers
         /// <summary>
         /// Exclui um pátio do sistema.
         /// </summary>
-        /// <remarks>
-        /// Remove o pátio informado pelo ID.
-        /// </remarks>
-        /// <param name="id">Identificador único do pátio</param>
-        /// <response code="204">Pátio removido</response>
-        /// <response code="404">Pátio não encontrado</response>
         [HttpDelete("{id}")]
         [SwaggerResponse(204, "Pátio removido com sucesso")]
         [SwaggerResponse(404, "Pátio não encontrado")]

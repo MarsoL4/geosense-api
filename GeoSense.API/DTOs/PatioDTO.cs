@@ -6,8 +6,13 @@
     public class PatioDTO
     {
         /// <summary>
-        /// Identificador único do pátio.
+        /// Identificador único do pátio (gerado pelo banco).
         /// </summary>
         public long Id { get; set; }
+
+        /// <summary>
+        /// Nome do pátio.
+        /// </summary>
+        public required string Nome { get; set; }
     }
 }

@@ -24,7 +24,13 @@ namespace GeoSense.API.AutoMapper
                 .ForMember(dest => dest.PatioId, opt => opt.MapFrom(src => src.PatioId));
 
             CreateMap<Patio, PatioDTO>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome));
+
+            CreateMap<Patio, PatioDetalhesDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome))
+                .ForMember(dest => dest.Vagas, opt => opt.MapFrom(src => src.Vagas));
 
             CreateMap<Usuario, UsuarioDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
@@ -34,7 +40,7 @@ namespace GeoSense.API.AutoMapper
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => (int)src.Tipo));
 
             CreateMap<UsuarioDTO, Usuario>()
-                .ConstructUsing(dto => new Usuario(dto.Id, dto.Nome, dto.Email, dto.Senha, (TipoUsuario)dto.Tipo));
+                .ConstructUsing(dto => new Usuario(0, dto.Nome, dto.Email, dto.Senha, (TipoUsuario)dto.Tipo));
         }
     }
 }
