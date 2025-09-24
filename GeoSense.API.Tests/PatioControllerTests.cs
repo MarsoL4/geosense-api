@@ -33,7 +33,7 @@ namespace GeoSense.API.Tests
             var mapper = CreateMapper();
             var controller = new PatioController(context, mapper);
 
-            var dto = new PatioDTO { Id = 0 };
+            var dto = new PatioDTO { Nome = "Pátio Central" };
 
             var result = await controller.PostPatio(dto);
 

@@ -30,7 +30,7 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
-            context.Patios.Add(new Patio { });
+            context.Patios.Add(new Patio { Nome = "Pátio Central" });
             await context.SaveChangesAsync();
 
             var mapper = CreateMapper();

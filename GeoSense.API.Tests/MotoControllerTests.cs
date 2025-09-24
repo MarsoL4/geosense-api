@@ -28,6 +28,9 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+            context.Vagas.Add(new GeoSense.API.Infrastructure.Persistence.Vaga(1, 1));
+            await context.SaveChangesAsync();
+
             var mapper = CreateMapper();
             var controller = new MotoController(context, mapper);
 

@@ -34,7 +34,6 @@ namespace GeoSense.API.Tests
 
             var dto = new UsuarioDTO
             {
-                Id = 0,
                 Nome = "Teste",
                 Email = "teste@exemplo.com",
                 Senha = "senha123",
