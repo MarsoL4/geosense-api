@@ -118,8 +118,7 @@ namespace GeoSense.API.Controllers
             if (usuario == null)
                 return NotFound();
 
-            var emailExiste = await _context.Usuarios
-                .AnyAsync(u => u.Email == dto.Email && u.Id != id);
+            var emailExiste = await _context.Usuarios.CountAsync(u => u.Email == dto.Email) > 0;
 
             if (emailExiste)
                 return BadRequest("Já existe um usuário com esse email.");
