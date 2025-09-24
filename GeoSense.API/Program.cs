@@ -42,7 +42,7 @@ namespace GeoSense.API
                 {
                     Title = "GeoSense API",
                     Version = "v1",
-                    Description = "API RESTful para gerenciamento de motos, vagas e pátios.\nEndpoints CRUD, paginação, HATEOAS e exemplos de payload."
+                    Description = "API RESTful para gerenciamento de Motos, Vagas, Pátios e Usuários.\nEndpoints CRUD, paginação, HATEOAS e exemplos de payload."
                 });
 
                 options.ExampleFilters();
