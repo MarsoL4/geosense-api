@@ -5,14 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GeoSense.API.Services
 {
-    public class VagaService
+    public class VagaService(GeoSenseContext context)
     {
-        private readonly GeoSenseContext _context;
-
-        public VagaService(GeoSenseContext context)
-        {
-            _context = context;
-        }
+        private readonly GeoSenseContext _context = context;
 
         public async Task<VagasStatusDTO> ObterVagasLivresAsync()
         {
