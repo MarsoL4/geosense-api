@@ -18,7 +18,7 @@ namespace GeoSense.API.Services
         {
             // Busca apenas vagas com Status LIVRE, e seleciona apenas os campos necessários
             var vagasLivres = await _context.Vagas
-                .Where(v => v.Status == StatusVaga.LIVRE)
+                .Where(v => (int)v.Status == (int)StatusVaga.LIVRE)
                 .Select(v => v.Tipo)
                 .ToListAsync();
 

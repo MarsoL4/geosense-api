@@ -28,10 +28,10 @@ namespace GeoSense.API.Controllers
                 .CountAsync(m => !string.IsNullOrEmpty(m.ProblemaIdentificado));
 
             var vagasLivres = await _context.Vagas
-                .CountAsync(v => v.Status == StatusVaga.LIVRE);
+                .CountAsync(v => (int)v.Status == (int)StatusVaga.LIVRE);
 
             var vagasOcupadas = await _context.Vagas
-                .CountAsync(v => v.Status == StatusVaga.OCUPADA);
+                .CountAsync(v => (int)v.Status == (int)StatusVaga.OCUPADA);
 
             var totalVagas = vagasLivres + vagasOcupadas;
 
