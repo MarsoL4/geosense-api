@@ -102,21 +102,16 @@ namespace GeoSense.API.Controllers
             if (moto == null)
                 return NotFound();
 
-            var vagaOcupada = await _context.Motos
-                .AnyAsync(m => m.VagaId == dto.VagaId && m.Id != id);
-
+            // Substituição do AnyAsync por CountAsync > 0
+            var vagaOcupada = await _context.Motos.CountAsync(m => m.VagaId == dto.VagaId && m.Id != id) > 0;
             if (vagaOcupada)
                 return BadRequest("Esta vaga já está ocupada por outra moto.");
 
-            var placaExiste = await _context.Motos
-                .AnyAsync(m => m.Placa == dto.Placa && m.Id != id);
-
+            var placaExiste = await _context.Motos.CountAsync(m => m.Placa == dto.Placa && m.Id != id) > 0;
             if (placaExiste)
                 return BadRequest("Já existe uma moto com essa placa.");
 
-            var chassiExiste = await _context.Motos
-                .AnyAsync(m => m.Chassi == dto.Chassi && m.Id != id);
-
+            var chassiExiste = await _context.Motos.CountAsync(m => m.Chassi == dto.Chassi && m.Id != id) > 0;
             if (chassiExiste)
                 return BadRequest("Já existe uma moto com esse chassi.");
 
@@ -145,21 +140,15 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(400, "Restrição de negócio violada")]
         public async Task<ActionResult<MotoDetalhesDTO>> PostMoto(MotoDTO dto)
         {
-            var vagaOcupada = await _context.Motos
-                .AnyAsync(m => m.VagaId == dto.VagaId);
-
+            var vagaOcupada = await _context.Motos.CountAsync(m => m.VagaId == dto.VagaId) > 0;
             if (vagaOcupada)
                 return BadRequest("Esta vaga já está ocupada por outra moto.");
 
-            var placaExiste = await _context.Motos
-                .AnyAsync(m => m.Placa == dto.Placa);
-
+            var placaExiste = await _context.Motos.CountAsync(m => m.Placa == dto.Placa) > 0;
             if (placaExiste)
                 return BadRequest("Já existe uma moto com essa placa.");
 
-            var chassiExiste = await _context.Motos
-                .AnyAsync(m => m.Chassi == dto.Chassi);
-
+            var chassiExiste = await _context.Motos.CountAsync(m => m.Chassi == dto.Chassi) > 0;
             if (chassiExiste)
                 return BadRequest("Já existe uma moto com esse chassi.");
 
