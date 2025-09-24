@@ -2,12 +2,23 @@
 
 namespace GeoSense.API.Infrastructure.Persistence
 {
-    public class Usuario(long id, string nome, string email, string senha, TipoUsuario tipo)
+    public class Usuario
     {
-        public long Id { get; private set; } = id;
-        public string Nome { get; private set; } = nome;
-        public string Email { get; private set; } = email;
-        public string Senha { get; private set; } = senha;
-        public TipoUsuario Tipo { get; private set; } = tipo;
+        public long Id { get; set; }
+        public string Nome { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Senha { get; set; } = string.Empty;
+        public TipoUsuario Tipo { get; set; }
+
+        public Usuario() { }
+
+        public Usuario(long id, string nome, string email, string senha, TipoUsuario tipo)
+        {
+            Id = id;
+            Nome = nome;
+            Email = email;
+            Senha = senha;
+            Tipo = tipo;
+        }
     }
 }
