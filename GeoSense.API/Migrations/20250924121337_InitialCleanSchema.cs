@@ -25,19 +25,19 @@ namespace GeoSense.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Usuarios",
+                name: "USUARIO",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "NUMBER(19)", nullable: false)
+                    ID = table.Column<long>(type: "NUMBER(19)", nullable: false)
                         .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
-                    Nome = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
-                    Email = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
-                    Senha = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
-                    Tipo = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                    NOME = table.Column<string>(type: "NVARCHAR2(100)", maxLength: 100, nullable: false),
+                    EMAIL = table.Column<string>(type: "NVARCHAR2(100)", maxLength: 100, nullable: false),
+                    SENHA = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: false),
+                    TIPO = table.Column<int>(type: "NUMBER(10)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Usuarios", x => x.Id);
+                    table.PrimaryKey("PK_USUARIO", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -168,6 +168,12 @@ namespace GeoSense.API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_USUARIO_EMAIL",
+                table: "USUARIO",
+                column: "EMAIL",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_VAGA_PATIO_ID",
                 table: "VAGA",
                 column: "PATIO_ID");
@@ -183,7 +189,7 @@ namespace GeoSense.API.Migrations
                 name: "DEFEITO");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
+                name: "USUARIO");
 
             migrationBuilder.DropTable(
                 name: "MOTO");
