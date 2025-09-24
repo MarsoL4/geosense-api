@@ -20,6 +20,7 @@ namespace GeoSense.API.Infrastructure.Contexts
             modelBuilder.ApplyConfiguration(new VagaMapping());
             modelBuilder.ApplyConfiguration(new DefeitoMapping());
             modelBuilder.ApplyConfiguration(new AlocacaoMotoMapping());
+            modelBuilder.ApplyConfiguration(new UsuarioMapping());
         }
     }
 }
