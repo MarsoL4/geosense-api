@@ -1,14 +1,10 @@
-﻿using Xunit;
-using GeoSense.API.Controllers;
-using GeoSense.API.Infrastructure.Contexts;
-using Microsoft.EntityFrameworkCore;
-using GeoSense.API.DTOs;
-using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
+﻿using AutoMapper;
 using GeoSense.API.AutoMapper;
-using System.Threading.Tasks;
+using GeoSense.API.Controllers;
 using GeoSense.API.DTOs.Usuario;
-
+using GeoSense.API.Infrastructure.Contexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 namespace GeoSense.API.Tests
 {
     public class UsuarioControllerTests
