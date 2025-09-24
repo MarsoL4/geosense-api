@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GeoSense.API.Migrations
 {
     /// <inheritdoc />
-    public partial class RecriandoDB : Migration
+    public partial class InitialCleanSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,11 +16,28 @@ namespace GeoSense.API.Migrations
                 columns: table => new
                 {
                     ID = table.Column<long>(type: "NUMBER(19)", nullable: false)
-                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1")
+                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
+                    NOME = table.Column<string>(type: "NVARCHAR2(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PATIO", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "USUARIO",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "NUMBER(19)", nullable: false)
+                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
+                    Nome = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
+                    Email = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
+                    Senha = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
+                    Tipo = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_USUARIO", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -164,6 +181,9 @@ namespace GeoSense.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "DEFEITO");
+
+            migrationBuilder.DropTable(
+                name: "USUARIO");
 
             migrationBuilder.DropTable(
                 name: "MOTO");

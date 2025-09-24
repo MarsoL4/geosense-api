@@ -12,8 +12,8 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace GeoSense.API.Migrations
 {
     [DbContext(typeof(GeoSenseContext))]
-    [Migration("20250919010805_RecriandoDB")]
-    partial class RecriandoDB
+    [Migration("20250924005456_InitialCleanSchema")]
+    partial class InitialCleanSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -149,9 +149,43 @@ namespace GeoSense.API.Migrations
 
                     OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("NVARCHAR2(100)")
+                        .HasColumnName("NOME");
+
                     b.HasKey("Id");
 
                     b.ToTable("PATIO", (string)null);
+                });
+
+            modelBuilder.Entity("GeoSense.API.Infrastructure.Persistence.Usuario", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(19)");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("Senha")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("NUMBER(10)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("USUARIO");
                 });
 
             modelBuilder.Entity("GeoSense.API.Infrastructure.Persistence.Vaga", b =>

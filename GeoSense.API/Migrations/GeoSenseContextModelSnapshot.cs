@@ -146,6 +146,12 @@ namespace GeoSense.API.Migrations
 
                     OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("NVARCHAR2(100)")
+                        .HasColumnName("NOME");
+
                     b.HasKey("Id");
 
                     b.ToTable("PATIO", (string)null);
@@ -176,7 +182,7 @@ namespace GeoSense.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("USUARIO");
                 });
 
             modelBuilder.Entity("GeoSense.API.Infrastructure.Persistence.Vaga", b =>
