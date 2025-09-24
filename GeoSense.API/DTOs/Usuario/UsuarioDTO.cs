@@ -5,7 +5,8 @@
     /// </summary>
     public class UsuarioDTO
     {
-        public long Id { get; set; }
+        // Para POST, Id não é obrigatório
+        public long? Id { get; set; }
         public required string Nome { get; set; }
         public required string Email { get; set; }
         public required string Senha { get; set; }

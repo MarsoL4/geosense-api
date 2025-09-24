@@ -8,7 +8,7 @@
         /// <summary>
         /// Identificador único do pátio (gerado pelo banco).
         /// </summary>
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         /// <summary>
         /// Nome do pátio.
