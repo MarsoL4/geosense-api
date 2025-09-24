@@ -89,8 +89,7 @@ namespace GeoSense.API.Controllers
             if (emailExiste)
                 return BadRequest("Já existe um usuário com esse email.");
 
-            var novoUsuario = _mapper.Map<Usuario>(dto);
-
+            var novoUsuario = new Usuario(0, dto.Nome, dto.Email, dto.Senha, (TipoUsuario)dto.Tipo);
             _context.Usuarios.Add(novoUsuario);
             await _context.SaveChangesAsync();
 

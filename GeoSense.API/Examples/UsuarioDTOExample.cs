@@ -9,7 +9,6 @@ namespace GeoSense.API.Examples
         {
             return new UsuarioDTO
             {
-                Id = 1,
                 Nome = "Rafael de Souza Pinto",
                 Email = "rafael.pinto@exemplo.com",
                 Senha = "12345678",
