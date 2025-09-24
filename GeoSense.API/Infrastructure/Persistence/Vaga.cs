@@ -22,7 +22,7 @@ namespace GeoSense.API.Infrastructure.Persistence
             PatioId = patioId;
         }
 
-        public ICollection<Moto> Motos { get; set; } = new List<Moto>();
-        public ICollection<AlocacaoMoto> Alocacoes { get; set; } = new List<AlocacaoMoto>();
+        public ICollection<Moto> Motos { get; set; } = [];
+        public ICollection<AlocacaoMoto> Alocacoes { get; set; } = [];
     }
 }
