@@ -25,7 +25,7 @@ namespace GeoSense.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "USUARIO",
+                name: "Usuarios",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "NUMBER(19)", nullable: false)
@@ -37,7 +37,7 @@ namespace GeoSense.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_USUARIO", x => x.Id);
+                    table.PrimaryKey("PK_Usuarios", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,7 +183,7 @@ namespace GeoSense.API.Migrations
                 name: "DEFEITO");
 
             migrationBuilder.DropTable(
-                name: "USUARIO");
+                name: "Usuarios");
 
             migrationBuilder.DropTable(
                 name: "MOTO");

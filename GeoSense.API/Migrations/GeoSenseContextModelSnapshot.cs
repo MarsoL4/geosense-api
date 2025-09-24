@@ -182,7 +182,7 @@ namespace GeoSense.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("USUARIO");
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("GeoSense.API.Infrastructure.Persistence.Vaga", b =>

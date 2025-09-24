@@ -12,7 +12,7 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace GeoSense.API.Migrations
 {
     [DbContext(typeof(GeoSenseContext))]
-    [Migration("20250924005456_InitialCleanSchema")]
+    [Migration("20250924114237_InitialCleanSchema")]
     partial class InitialCleanSchema
     {
         /// <inheritdoc />
@@ -185,7 +185,7 @@ namespace GeoSense.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("USUARIO");
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("GeoSense.API.Infrastructure.Persistence.Vaga", b =>
