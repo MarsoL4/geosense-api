@@ -84,8 +84,7 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(400, "Email já cadastrado")]
         public async Task<ActionResult<UsuarioDTO>> PostUsuario(UsuarioDTO dto)
         {
-            var emailExiste = await _context.Usuarios
-                .AnyAsync(u => u.Email == dto.Email);
+            var emailExiste = await _context.Usuarios.CountAsync(u => u.Email == dto.Email) > 0;
 
             if (emailExiste)
                 return BadRequest("Já existe um usuário com esse email.");
