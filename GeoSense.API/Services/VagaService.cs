@@ -1,5 +1,5 @@
 ﻿using GeoSense.API.Domain.Enums;
-using GeoSense.API.DTOs;
+using GeoSense.API.DTOs.Vaga;
 using GeoSense.API.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 

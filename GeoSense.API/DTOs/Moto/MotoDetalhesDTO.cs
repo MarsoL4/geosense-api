@@ -1,4 +1,4 @@
-﻿namespace GeoSense.API.DTOs
+﻿namespace GeoSense.API.DTOs.Moto
 {
     /// <summary>
     /// Representa os dados de detalhe de uma Moto.

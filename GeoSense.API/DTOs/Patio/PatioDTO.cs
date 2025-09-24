@@ -1,4 +1,4 @@
-﻿namespace GeoSense.API.DTOs
+﻿namespace GeoSense.API.DTOs.Patio
 {
     /// <summary>
     /// Representa os dados necessários para cadastrar ou atualizar um Pátio.

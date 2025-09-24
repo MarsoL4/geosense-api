@@ -1,4 +1,6 @@
-﻿namespace GeoSense.API.DTOs
+﻿using GeoSense.API.DTOs.Vaga;
+
+namespace GeoSense.API.DTOs.Patio
 {
     /// <summary>
     /// DTO de detalhes do pátio, incluindo vagas.

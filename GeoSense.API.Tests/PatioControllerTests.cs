@@ -8,6 +8,7 @@ using GeoSense.API.Infrastructure.Persistence;
 using AutoMapper;
 using GeoSense.API.AutoMapper;
 using System.Threading.Tasks;
+using GeoSense.API.DTOs.Patio;
 
 namespace GeoSense.API.Tests
 {

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using GeoSense.API.DTOs;
+using GeoSense.API.DTOs.Patio;
+using GeoSense.API.DTOs.Vaga;
 using GeoSense.API.Helpers;
 using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Infrastructure.Persistence;

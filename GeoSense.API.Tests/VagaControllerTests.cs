@@ -8,6 +8,7 @@ using GeoSense.API.Infrastructure.Persistence;
 using GeoSense.API.Domain.Enums;
 using AutoMapper;
 using GeoSense.API.AutoMapper;
+using GeoSense.API.DTOs.Vaga;
 
 namespace GeoSense.API.Tests
 {

@@ -6,6 +6,7 @@ using GeoSense.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using GeoSense.API.AutoMapper;
+using GeoSense.API.DTOs.Moto;
 
 namespace GeoSense.API.Tests
 {

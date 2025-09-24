@@ -1,4 +1,4 @@
-﻿namespace GeoSense.API.DTOs
+﻿namespace GeoSense.API.DTOs.Usuario
 {
     /// <summary>
     /// Representa os dados necessários para cadastrar ou atualizar um Usuário.

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using GeoSense.API.AutoMapper;
 using System.Threading.Tasks;
+using GeoSense.API.DTOs.Usuario;
 
 namespace GeoSense.API.Tests
 {

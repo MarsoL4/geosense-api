@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using GeoSense.API.DTOs;
+using GeoSense.API.DTOs.Moto;
 using GeoSense.Infrastructure.Repositories.Interfaces;
 
 namespace GeoSense.API.Services

@@ -1,4 +1,4 @@
-﻿using GeoSense.API.DTOs;
+﻿using GeoSense.API.DTOs.Vaga;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace GeoSense.API.Examples

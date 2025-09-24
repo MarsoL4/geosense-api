@@ -1,4 +1,4 @@
-﻿namespace GeoSense.API.DTOs
+﻿namespace GeoSense.API.DTOs.Vaga
 {
     /// <summary>
     /// Dados agregados sobre o status das vagas livres.

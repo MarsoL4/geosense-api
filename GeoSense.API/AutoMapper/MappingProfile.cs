@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
-using GeoSense.API.DTOs;
 using GeoSense.API.Infrastructure.Persistence;
 using GeoSense.API.Domain.Enums;
+using GeoSense.API.DTOs.Moto;
+using GeoSense.API.DTOs.Patio;
+using GeoSense.API.DTOs.Vaga;
+using GeoSense.API.DTOs.Usuario;
 
 namespace GeoSense.API.AutoMapper
 {
