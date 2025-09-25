@@ -16,7 +16,7 @@ namespace GeoSense.API.Infrastructure.Mappings
             builder.Property(m => m.Modelo).HasColumnName("MODELO").HasMaxLength(50).IsRequired();
             builder.Property(m => m.Placa).HasColumnName("PLACA").HasMaxLength(10).IsRequired();
             builder.Property(m => m.Chassi).HasColumnName("CHASSI").HasMaxLength(50).IsRequired();
-            builder.Property(m => m.ProblemaIdentificado).HasColumnName("PROBLEMA_IDENTIFICADO").HasMaxLength(255).IsRequired();
+            builder.Property(m => m.ProblemaIdentificado).HasColumnName("PROBLEMA_IDENTIFICADO").HasMaxLength(255); // Permite nulo
 
             builder.Property(m => m.VagaId).HasColumnName("VAGA_ID").IsRequired();
 
