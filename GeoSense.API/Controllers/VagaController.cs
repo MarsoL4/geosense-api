@@ -113,13 +113,13 @@ namespace GeoSense.API.Controllers
         /// </remarks>
         /// <param name="id">Identificador único da vaga</param>
         /// <param name="dto">Dados da vaga a serem atualizados</param>
-        /// <response code="204">Vaga atualizada com sucesso</response>
+        /// <response code="200">Vaga atualizada com sucesso</response>
         /// <response code="404">Vaga não encontrada</response>
         [HttpPut("{id}")]
         [SwaggerRequestExample(typeof(VagaDTO), typeof(GeoSense.API.Examples.VagaDTOExample))]
-        [SwaggerResponse(204, "Vaga atualizada com sucesso")]
+        [SwaggerResponse(200, "Vaga atualizada com sucesso", typeof(VagaDTO))]
         [SwaggerResponse(404, "Vaga não encontrada")]
-        public async Task<IActionResult> PutVaga(long id, VagaDTO dto)
+        public async Task<ActionResult<VagaDTO>> PutVaga(long id, VagaDTO dto)
         {
             var vaga = await _context.Vagas.FindAsync(id);
             if (vaga == null)
@@ -131,7 +131,11 @@ namespace GeoSense.API.Controllers
             vaga.GetType().GetProperty("PatioId")?.SetValue(vaga, dto.PatioId);
 
             await _context.SaveChangesAsync();
-            return NoContent();
+
+            var vagaAtualizada = await _context.Vagas.FindAsync(id);
+            var resultDto = _mapper.Map<VagaDTO>(vagaAtualizada);
+
+            return Ok(resultDto);
         }
 
         /// <summary>

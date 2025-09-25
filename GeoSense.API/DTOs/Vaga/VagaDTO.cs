@@ -6,6 +6,11 @@
     public class VagaDTO
     {
         /// <summary>
+        /// Identificador único da vaga (gerado pelo banco).
+        /// </summary>
+        public long? Id { get; set; }
+
+        /// <summary>
         /// Número da vaga.
         /// </summary>
         public int Numero { get; set; }

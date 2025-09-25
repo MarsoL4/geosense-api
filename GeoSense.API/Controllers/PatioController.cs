@@ -33,7 +33,7 @@ namespace GeoSense.API.Controllers
                 .Take(pageSize)
                 .ToListAsync();
 
-            var items = patios.Select(x => new PatioDTO { Id = x.Id, Nome = x.Nome }).ToList();
+            var items = _mapper.Map<List<PatioDTO>>(patios);
 
             var links = HateoasHelper.GetPagedLinks(Url, "Patios", page, pageSize, totalCount);
 
@@ -68,13 +68,7 @@ namespace GeoSense.API.Controllers
             {
                 Id = patio.Id,
                 Nome = patio.Nome,
-                Vagas = [.. patio.Vagas.Select(v => new VagaDTO
-                {
-                    Numero = v.Numero,
-                    Tipo = (int)v.Tipo,
-                    Status = (int)v.Status,
-                    PatioId = v.PatioId
-                })]
+                Vagas = [.. patio.Vagas.Select(v => _mapper.Map<VagaDTO>(v))]
             };
 
             return Ok(dto);
@@ -93,7 +87,7 @@ namespace GeoSense.API.Controllers
             await _context.SaveChangesAsync();
 
             var patioCompleto = await _context.Patios.FindAsync(novoPatio.Id);
-            var resultDto = new PatioDTO { Id = patioCompleto!.Id, Nome = patioCompleto.Nome };
+            var resultDto = _mapper.Map<PatioDTO>(patioCompleto);
 
             return CreatedAtAction(nameof(GetPatio), new { id = novoPatio.Id }, resultDto);
         }
@@ -103,9 +97,9 @@ namespace GeoSense.API.Controllers
         /// </summary>
         [HttpPut("{id}")]
         [SwaggerRequestExample(typeof(PatioDTO), typeof(GeoSense.API.Examples.PatioDTOExample))]
-        [SwaggerResponse(204, "Pátio atualizado com sucesso")]
+        [SwaggerResponse(200, "Pátio atualizado com sucesso", typeof(PatioDTO))]
         [SwaggerResponse(404, "Pátio não encontrado")]
-        public async Task<IActionResult> PutPatio(long id, PatioDTO _dto)
+        public async Task<ActionResult<PatioDTO>> PutPatio(long id, PatioDTO _dto)
         {
             var patio = await _context.Patios.FindAsync(id);
             if (patio == null)
@@ -113,7 +107,11 @@ namespace GeoSense.API.Controllers
 
             patio.Nome = _dto.Nome;
             await _context.SaveChangesAsync();
-            return NoContent();
+
+            var patioAtualizado = await _context.Patios.FindAsync(id);
+            var resultDto = _mapper.Map<PatioDTO>(patioAtualizado);
+
+            return Ok(resultDto);
         }
 
         /// <summary>

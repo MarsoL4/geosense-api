@@ -21,6 +21,7 @@ namespace GeoSense.API.AutoMapper
                 .ForMember(dest => dest.VagaId, opt => opt.MapFrom(src => src.VagaId));
 
             CreateMap<Vaga, VagaDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Numero, opt => opt.MapFrom(src => src.Numero))
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => (int)src.Tipo))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => (int)src.Status))
