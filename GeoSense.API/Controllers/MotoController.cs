@@ -85,6 +85,7 @@ namespace GeoSense.API.Controllers
         /// </summary>
         /// <remarks>
         /// Atualiza os dados da moto informada pelo ID. O corpo da requisição deve conter o modelo <see cref="MotoDTO"/>.
+        /// O campo <b>ProblemaIdentificado</b> é opcional.
         /// </remarks>
         /// <param name="id">Identificador único da moto</param>
         /// <param name="dto">Dados da moto a serem atualizados</param>
@@ -102,7 +103,6 @@ namespace GeoSense.API.Controllers
             if (moto == null)
                 return NotFound();
 
-            // Substituição do AnyAsync por CountAsync > 0
             var vagaOcupada = await _context.Motos.CountAsync(m => m.VagaId == dto.VagaId && m.Id != id) > 0;
             if (vagaOcupada)
                 return BadRequest("Esta vaga já está ocupada por outra moto.");
@@ -130,6 +130,7 @@ namespace GeoSense.API.Controllers
         /// </summary>
         /// <remarks>
         /// Cadastra uma nova moto no sistema. O corpo da requisição deve conter o modelo <see cref="MotoDTO"/>.
+        /// O campo <b>ProblemaIdentificado</b> é opcional.
         /// </remarks>
         /// <param name="dto">Dados da nova moto</param>
         /// <response code="201">Moto criada com sucesso</response>

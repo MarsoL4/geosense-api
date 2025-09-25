@@ -9,7 +9,7 @@
         public required string Modelo { get; set; }
         public required string Placa { get; set; }
         public required string Chassi { get; set; }
-        public required string ProblemaIdentificado { get; set; }
+        public string? ProblemaIdentificado { get; set; }
         public long VagaId { get; set; }
     }
 }

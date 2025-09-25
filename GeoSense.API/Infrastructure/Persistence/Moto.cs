@@ -6,13 +6,13 @@
         public required string Modelo { get; set; }
         public required string Placa { get; set; }
         public required string Chassi { get; set; }
-        public required string ProblemaIdentificado { get; set; }
+        public string? ProblemaIdentificado { get; set; }
         public long VagaId { get; set; }
         public virtual Vaga? Vaga { get; set; }
 
         public Moto() { }
 
-        public Moto(long id, string modelo, string placa, string chassi, string problema_identificado, long vaga_id)
+        public Moto(long id, string modelo, string placa, string chassi, string? problema_identificado, long vaga_id)
         {
             Id = id;
             Modelo = modelo;
@@ -22,7 +22,7 @@
             VagaId = vaga_id;
         }
 
-        public ICollection<Defeito> Defeitos { get; set; } = new List<Defeito>();
-        public ICollection<AlocacaoMoto> Alocacoes { get; set; } = new List<AlocacaoMoto>();
+        public ICollection<Defeito> Defeitos { get; set; } = [];
+        public ICollection<AlocacaoMoto> Alocacoes { get; set; } = [];
     }
 }
