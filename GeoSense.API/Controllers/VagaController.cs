@@ -95,7 +95,7 @@ namespace GeoSense.API.Controllers
         {
             // Verifica se já existe vaga com mesmo número no mesmo pátio
             var vagaExistente = await _context.Vagas
-                .AnyAsync(v => v.Numero == dto.Numero && v.PatioId == dto.PatioId);
+                .CountAsync(v => v.Numero == dto.Numero && v.PatioId == dto.PatioId) > 0;
 
             if (vagaExistente)
                 return BadRequest("Já existe uma vaga com esse número neste pátio.");
@@ -140,7 +140,7 @@ namespace GeoSense.API.Controllers
 
             // Verifica se já existe vaga com mesmo número no mesmo pátio (exceto esta vaga)
             var vagaExistente = await _context.Vagas
-                .AnyAsync(v => v.Numero == dto.Numero && v.PatioId == dto.PatioId && v.Id != id);
+                .CountAsync(v => v.Numero == dto.Numero && v.PatioId == dto.PatioId && v.Id != id) > 0;
 
             if (vagaExistente)
                 return BadRequest("Já existe uma vaga com esse número neste pátio.");
