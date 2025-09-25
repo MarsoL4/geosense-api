@@ -68,5 +68,97 @@ namespace GeoSense.API.Tests
 
             Assert.IsType<NotFoundResult>(result.Result);
         }
+
+        [Fact]
+        public async Task PutVaga_DeveRetornarNoContent_SeExistir()
+        {
+            var options = new DbContextOptionsBuilder<GeoSenseContext>()
+                .UseInMemoryDatabase(databaseName: "GeoSenseTestDb_Vaga_Put")
+                .Options;
+
+            using var context = new GeoSenseContext(options);
+            var patio = new Patio { Nome = "Pátio Central" };
+            context.Patios.Add(patio);
+            var vaga = new Vaga(1, patio.Id);
+            context.Vagas.Add(vaga);
+            await context.SaveChangesAsync();
+
+            var mapper = CreateMapper();
+            var controller = new VagaController(context, mapper);
+
+            var dto = new VagaDTO
+            {
+                Numero = 2,
+                Tipo = (int)TipoVaga.Motor_Defeituoso,
+                Status = (int)StatusVaga.OCUPADA,
+                PatioId = patio.Id
+            };
+
+            var result = await controller.PutVaga(vaga.Id, dto);
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async Task PutVaga_DeveRetornarNotFound_SeNaoExistir()
+        {
+            var options = new DbContextOptionsBuilder<GeoSenseContext>()
+                .UseInMemoryDatabase(databaseName: "GeoSenseTestDb_Vaga_Put_NotFound")
+                .Options;
+
+            using var context = new GeoSenseContext(options);
+            var mapper = CreateMapper();
+            var controller = new VagaController(context, mapper);
+
+            var dto = new VagaDTO
+            {
+                Numero = 2,
+                Tipo = (int)TipoVaga.Motor_Defeituoso,
+                Status = (int)StatusVaga.OCUPADA,
+                PatioId = 1
+            };
+
+            var result = await controller.PutVaga(999, dto);
+
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteVaga_DeveRetornarNoContent_SeExistir()
+        {
+            var options = new DbContextOptionsBuilder<GeoSenseContext>()
+                .UseInMemoryDatabase(databaseName: "GeoSenseTestDb_Vaga_Delete")
+                .Options;
+
+            using var context = new GeoSenseContext(options);
+            var patio = new Patio { Nome = "Pátio Central" };
+            context.Patios.Add(patio);
+            var vaga = new Vaga(1, patio.Id);
+            context.Vagas.Add(vaga);
+            await context.SaveChangesAsync();
+
+            var mapper = CreateMapper();
+            var controller = new VagaController(context, mapper);
+
+            var result = await controller.DeleteVaga(vaga.Id);
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteVaga_DeveRetornarNotFound_SeNaoExistir()
+        {
+            var options = new DbContextOptionsBuilder<GeoSenseContext>()
+                .UseInMemoryDatabase(databaseName: "GeoSenseTestDb_Vaga_Delete_NotFound")
+                .Options;
+
+            using var context = new GeoSenseContext(options);
+            var mapper = CreateMapper();
+            var controller = new VagaController(context, mapper);
+
+            var result = await controller.DeleteVaga(999);
+
+            Assert.IsType<NotFoundResult>(result);
+        }
     }
 }
