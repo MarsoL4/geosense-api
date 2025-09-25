@@ -66,7 +66,7 @@ namespace GeoSense.API.Controllers
             var usuario = await _context.Usuarios.FindAsync(id);
 
             if (usuario == null)
-                return NotFound();
+                return NotFound(new { mensagem = "Usuário não encontrado." });
 
             var dto = _mapper.Map<UsuarioDTO>(usuario);
             return Ok(dto);
@@ -80,14 +80,14 @@ namespace GeoSense.API.Controllers
         /// <response code="400">Email já cadastrado</response>
         [HttpPost]
         [SwaggerRequestExample(typeof(UsuarioDTO), typeof(GeoSense.API.Examples.UsuarioDTOExample))]
-        [SwaggerResponse(201, "Usuário criado com sucesso", typeof(UsuarioDTO))]
+        [SwaggerResponse(201, "Usuário criado com sucesso", typeof(object))]
         [SwaggerResponse(400, "Email já cadastrado")]
         public async Task<ActionResult<UsuarioDTO>> PostUsuario(UsuarioDTO dto)
         {
             var emailExiste = await _context.Usuarios.CountAsync(u => u.Email == dto.Email) > 0;
 
             if (emailExiste)
-                return BadRequest("Já existe um usuário com esse email.");
+                return BadRequest(new { mensagem = "Já existe um usuário com esse email." });
 
             var novoUsuario = new Usuario(0, dto.Nome, dto.Email, dto.Senha, (TipoUsuario)dto.Tipo);
             _context.Usuarios.Add(novoUsuario);
@@ -96,7 +96,11 @@ namespace GeoSense.API.Controllers
             var usuarioCompleto = await _context.Usuarios.FindAsync(novoUsuario.Id);
             var resultDto = _mapper.Map<UsuarioDTO>(usuarioCompleto);
 
-            return CreatedAtAction(nameof(GetUsuario), new { id = novoUsuario.Id }, resultDto);
+            return CreatedAtAction(nameof(GetUsuario), new { id = novoUsuario.Id }, new
+            {
+                mensagem = "Usuário cadastrado com sucesso.",
+                dados = resultDto
+            });
         }
 
         /// <summary>
@@ -104,53 +108,62 @@ namespace GeoSense.API.Controllers
         /// </summary>
         /// <param name="id">Identificador único do usuário</param>
         /// <param name="dto">Dados do usuário a serem atualizados</param>
-        /// <response code="204">Usuário atualizado com sucesso</response>
+        /// <response code="200">Usuário atualizado com sucesso</response>
         /// <response code="400">Email já cadastrado</response>
         /// <response code="404">Usuário não encontrado</response>
         [HttpPut("{id}")]
         [SwaggerRequestExample(typeof(UsuarioDTO), typeof(GeoSense.API.Examples.UsuarioDTOExample))]
-        [SwaggerResponse(204, "Usuário atualizado com sucesso")]
+        [SwaggerResponse(200, "Usuário atualizado com sucesso", typeof(object))]
         [SwaggerResponse(400, "Email já cadastrado")]
         [SwaggerResponse(404, "Usuário não encontrado")]
         public async Task<IActionResult> PutUsuario(long id, UsuarioDTO dto)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
-                return NotFound();
+                return NotFound(new { mensagem = "Usuário não encontrado." });
 
-            var emailExiste = await _context.Usuarios.CountAsync(u => u.Email == dto.Email) > 0;
+            var emailExiste = await _context.Usuarios.CountAsync(u => u.Email == dto.Email && u.Id != id) > 0;
 
             if (emailExiste)
-                return BadRequest("Já existe um usuário com esse email.");
+                return BadRequest(new { mensagem = "Já existe um usuário com esse email." });
 
-            // Como é construtor primário, é necessário remover e criar novo, ou usar EF Core attach/update
             _context.Entry(usuario).State = EntityState.Detached;
             var usuarioAtualizado = new Usuario(id, dto.Nome, dto.Email, dto.Senha, (TipoUsuario)dto.Tipo);
 
             _context.Usuarios.Update(usuarioAtualizado);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            var usuarioAtualizadoCompleto = await _context.Usuarios.FindAsync(id);
+            var resultDto = _mapper.Map<UsuarioDTO>(usuarioAtualizadoCompleto);
+
+            return Ok(new
+            {
+                mensagem = "Usuário atualizado com sucesso.",
+                dados = resultDto
+            });
         }
 
         /// <summary>
         /// Exclui um usuário do sistema.
         /// </summary>
         /// <param name="id">Identificador único do usuário</param>
-        /// <response code="204">Usuário removido</response>
+        /// <response code="200">Usuário removido</response>
         /// <response code="404">Usuário não encontrado</response>
         [HttpDelete("{id}")]
-        [SwaggerResponse(204, "Usuário removido com sucesso")]
+        [SwaggerResponse(200, "Usuário removido com sucesso", typeof(object))]
         [SwaggerResponse(404, "Usuário não encontrado")]
         public async Task<IActionResult> DeleteUsuario(long id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
-                return NotFound();
+                return NotFound(new { mensagem = "Usuário não encontrado." });
 
             _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok(new
+            {
+                mensagem = "Usuário deletado com sucesso."
+            });
         }
     }
 }

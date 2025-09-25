@@ -73,7 +73,7 @@ namespace GeoSense.API.Controllers
 
             if (moto == null)
             {
-                return NotFound();
+                return NotFound(new { mensagem = "Moto não encontrada." });
             }
 
             var dto = _mapper.Map<MotoDetalhesDTO>(moto);
@@ -89,31 +89,31 @@ namespace GeoSense.API.Controllers
         /// </remarks>
         /// <param name="id">Identificador único da moto</param>
         /// <param name="dto">Dados da moto a serem atualizados</param>
-        /// <response code="204">Moto atualizada com sucesso</response>
+        /// <response code="200">Moto atualizada com sucesso</response>
         /// <response code="400">Alguma restrição de negócio foi violada</response>
         /// <response code="404">Moto não encontrada</response>
         [HttpPut("{id}")]
         [SwaggerRequestExample(typeof(MotoDTO), typeof(GeoSense.API.Examples.MotoDTOExample))]
-        [SwaggerResponse(204, "Moto atualizada com sucesso")]
+        [SwaggerResponse(200, "Moto atualizada com sucesso", typeof(object))]
         [SwaggerResponse(400, "Restrição de negócio violada")]
         [SwaggerResponse(404, "Moto não encontrada")]
         public async Task<IActionResult> PutMoto(long id, MotoDTO dto)
         {
             var moto = await _context.Motos.FindAsync(id);
             if (moto == null)
-                return NotFound();
+                return NotFound(new { mensagem = "Moto não encontrada." });
 
             var vagaOcupada = await _context.Motos.CountAsync(m => m.VagaId == dto.VagaId && m.Id != id) > 0;
             if (vagaOcupada)
-                return BadRequest("Esta vaga já está ocupada por outra moto.");
+                return BadRequest(new { mensagem = "Esta vaga já está ocupada por outra moto." });
 
             var placaExiste = await _context.Motos.CountAsync(m => m.Placa == dto.Placa && m.Id != id) > 0;
             if (placaExiste)
-                return BadRequest("Já existe uma moto com essa placa.");
+                return BadRequest(new { mensagem = "Já existe uma moto com essa placa." });
 
             var chassiExiste = await _context.Motos.CountAsync(m => m.Chassi == dto.Chassi && m.Id != id) > 0;
             if (chassiExiste)
-                return BadRequest("Já existe uma moto com esse chassi.");
+                return BadRequest(new { mensagem = "Já existe uma moto com esse chassi." });
 
             moto.Modelo = dto.Modelo;
             moto.Placa = dto.Placa;
@@ -122,7 +122,15 @@ namespace GeoSense.API.Controllers
             moto.VagaId = dto.VagaId;
 
             await _context.SaveChangesAsync();
-            return NoContent();
+
+            var motoAtualizada = await _context.Motos.FirstOrDefaultAsync(m => m.Id == id);
+            var dtoAtualizado = _mapper.Map<MotoDetalhesDTO>(motoAtualizada);
+
+            return Ok(new
+            {
+                mensagem = "Moto atualizada com sucesso.",
+                dados = dtoAtualizado
+            });
         }
 
         /// <summary>
@@ -137,21 +145,21 @@ namespace GeoSense.API.Controllers
         /// <response code="400">Alguma restrição de negócio foi violada</response>
         [HttpPost]
         [SwaggerRequestExample(typeof(MotoDTO), typeof(GeoSense.API.Examples.MotoDTOExample))]
-        [SwaggerResponse(201, "Moto criada com sucesso", typeof(MotoDetalhesDTO))]
+        [SwaggerResponse(201, "Moto criada com sucesso", typeof(object))]
         [SwaggerResponse(400, "Restrição de negócio violada")]
         public async Task<ActionResult<MotoDetalhesDTO>> PostMoto(MotoDTO dto)
         {
             var vagaOcupada = await _context.Motos.CountAsync(m => m.VagaId == dto.VagaId) > 0;
             if (vagaOcupada)
-                return BadRequest("Esta vaga já está ocupada por outra moto.");
+                return BadRequest(new { mensagem = "Esta vaga já está ocupada por outra moto." });
 
             var placaExiste = await _context.Motos.CountAsync(m => m.Placa == dto.Placa) > 0;
             if (placaExiste)
-                return BadRequest("Já existe uma moto com essa placa.");
+                return BadRequest(new { mensagem = "Já existe uma moto com essa placa." });
 
             var chassiExiste = await _context.Motos.CountAsync(m => m.Chassi == dto.Chassi) > 0;
             if (chassiExiste)
-                return BadRequest("Já existe uma moto com esse chassi.");
+                return BadRequest(new { mensagem = "Já existe uma moto com esse chassi." });
 
             var novaMoto = new Moto
             {
@@ -170,7 +178,11 @@ namespace GeoSense.API.Controllers
 
             var resultDto = _mapper.Map<MotoDetalhesDTO>(motoCompleta);
 
-            return CreatedAtAction(nameof(GetMoto), new { id = novaMoto.Id }, resultDto);
+            return CreatedAtAction(nameof(GetMoto), new { id = novaMoto.Id }, new
+            {
+                mensagem = "Moto cadastrada com sucesso.",
+                dados = resultDto
+            });
         }
 
         /// <summary>
@@ -180,21 +192,24 @@ namespace GeoSense.API.Controllers
         /// Remove a moto informada pelo ID.
         /// </remarks>
         /// <param name="id">Identificador único da moto</param>
-        /// <response code="204">Moto removida</response>
+        /// <response code="200">Moto removida</response>
         /// <response code="404">Moto não encontrada</response>
         [HttpDelete("{id}")]
-        [SwaggerResponse(204, "Moto removida com sucesso")]
+        [SwaggerResponse(200, "Moto removida com sucesso", typeof(object))]
         [SwaggerResponse(404, "Moto não encontrada")]
         public async Task<IActionResult> DeleteMoto(long id)
         {
             var moto = await _context.Motos.FindAsync(id);
             if (moto == null)
-                return NotFound();
+                return NotFound(new { mensagem = "Moto não encontrada." });
 
             _context.Motos.Remove(moto);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new
+            {
+                mensagem = "Moto deletada com sucesso."
+            });
         }
     }
 }
