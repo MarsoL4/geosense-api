@@ -12,8 +12,8 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace GeoSense.API.Migrations
 {
     [DbContext(typeof(GeoSenseContext))]
-    [Migration("20250924122140_InitalCleanSchema")]
-    partial class InitalCleanSchema
+    [Migration("20250925003437_InitialCleanSchema")]
+    partial class InitialCleanSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
