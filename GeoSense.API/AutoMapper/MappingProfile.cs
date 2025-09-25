@@ -25,7 +25,8 @@ namespace GeoSense.API.AutoMapper
                 .ForMember(dest => dest.Numero, opt => opt.MapFrom(src => src.Numero))
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => (int)src.Tipo))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => (int)src.Status))
-                .ForMember(dest => dest.PatioId, opt => opt.MapFrom(src => src.PatioId));
+                .ForMember(dest => dest.PatioId, opt => opt.MapFrom(src => src.PatioId))
+                .ForMember(dest => dest.MotoId, opt => opt.MapFrom(src => src.Motos.FirstOrDefault() != null ? (long?)src.Motos.FirstOrDefault()!.Id : null)); // Pega a moto alocada, se houver
 
             CreateMap<Patio, PatioDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))

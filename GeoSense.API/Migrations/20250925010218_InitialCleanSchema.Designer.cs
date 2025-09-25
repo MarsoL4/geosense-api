@@ -12,7 +12,7 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace GeoSense.API.Migrations
 {
     [DbContext(typeof(GeoSenseContext))]
-    [Migration("20250925003437_InitialCleanSchema")]
+    [Migration("20250925010218_InitialCleanSchema")]
     partial class InitialCleanSchema
     {
         /// <inheritdoc />
@@ -117,7 +117,6 @@ namespace GeoSense.API.Migrations
                         .HasColumnName("PLACA");
 
                     b.Property<string>("ProblemaIdentificado")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("NVARCHAR2(255)")
                         .HasColumnName("PROBLEMA_IDENTIFICADO");
@@ -227,6 +226,9 @@ namespace GeoSense.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PatioId");
+
+                    b.HasIndex("Numero", "PatioId")
+                        .IsUnique();
 
                     b.ToTable("VAGA", (string)null);
                 });

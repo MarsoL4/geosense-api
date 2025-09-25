@@ -224,6 +224,9 @@ namespace GeoSense.API.Migrations
 
                     b.HasIndex("PatioId");
 
+                    b.HasIndex("Numero", "PatioId")
+                        .IsUnique();
+
                     b.ToTable("VAGA", (string)null);
                 });
 

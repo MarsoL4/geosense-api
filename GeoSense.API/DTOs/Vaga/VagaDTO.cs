@@ -29,5 +29,10 @@
         /// Id do pátio associado.
         /// </summary>
         public long PatioId { get; set; }
+
+        /// <summary>
+        /// Id da moto alocada na vaga, se houver.
+        /// </summary>
+        public long? MotoId { get; set; }
     }
 }

@@ -21,6 +21,9 @@ namespace GeoSense.API.Infrastructure.Mappings
             builder.HasOne(v => v.Patio)
                    .WithMany(p => p.Vagas)
                    .HasForeignKey(v => v.PatioId);
+
+            // Restrição de unicidade composta: Numero + PatioId
+            builder.HasIndex(v => new { v.Numero, v.PatioId }).IsUnique();
         }
     }
 }

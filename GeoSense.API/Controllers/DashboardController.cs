@@ -27,13 +27,15 @@ namespace GeoSense.API.Controllers
             var motosComProblema = await _context.Motos
                 .CountAsync(m => !string.IsNullOrEmpty(m.ProblemaIdentificado));
 
-            var vagasLivres = await _context.Vagas
-                .CountAsync(v => (int)v.Status == (int)StatusVaga.LIVRE);
+            // Considere vagas ocupadas aquelas que possuem uma moto associada
+            var vagas = await _context.Vagas
+                .Include(v => v.Motos)
+                .ToListAsync();
 
-            var vagasOcupadas = await _context.Vagas
-                .CountAsync(v => (int)v.Status == (int)StatusVaga.OCUPADA);
+            var vagasOcupadas = vagas.Count(v => v.Motos.Any());
+            var vagasLivres = vagas.Count(v => !v.Motos.Any());
 
-            var totalVagas = vagasLivres + vagasOcupadas;
+            var totalVagas = vagas.Count;
 
             var resultado = new
             {

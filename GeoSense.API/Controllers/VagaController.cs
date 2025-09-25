@@ -32,7 +32,7 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(200, "Lista paginada de vagas cadastradas", typeof(PagedHateoasDTO<VagaDTO>))]
         public async Task<ActionResult<PagedHateoasDTO<VagaDTO>>> GetVagas([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var query = _context.Vagas.AsQueryable();
+            var query = _context.Vagas.Include(v => v.Motos);
             var totalCount = await query.CountAsync();
             var vagas = await query
                 .Skip((page - 1) * pageSize)
@@ -69,7 +69,9 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(404, "Vaga não encontrada")]
         public async Task<ActionResult<VagaDTO>> GetVaga(long id)
         {
-            var vaga = await _context.Vagas.FindAsync(id);
+            var vaga = await _context.Vagas
+                .Include(v => v.Motos)
+                .FirstOrDefaultAsync(v => v.Id == id);
 
             if (vaga == null)
                 return NotFound();
@@ -91,6 +93,13 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(201, "Vaga criada com sucesso", typeof(VagaDTO))]
         public async Task<ActionResult<VagaDTO>> PostVaga(VagaDTO dto)
         {
+            // Verifica se já existe vaga com mesmo número no mesmo pátio
+            var vagaExistente = await _context.Vagas
+                .AnyAsync(v => v.Numero == dto.Numero && v.PatioId == dto.PatioId);
+
+            if (vagaExistente)
+                return BadRequest("Já existe uma vaga com esse número neste pátio.");
+
             var novaVaga = new Vaga(dto.Numero, dto.PatioId);
 
             novaVaga.GetType().GetProperty("Tipo")?.SetValue(novaVaga, (TipoVaga)dto.Tipo);
@@ -99,7 +108,9 @@ namespace GeoSense.API.Controllers
             _context.Vagas.Add(novaVaga);
             await _context.SaveChangesAsync();
 
-            var vagaCompleta = await _context.Vagas.FindAsync(novaVaga.Id);
+            var vagaCompleta = await _context.Vagas
+                .Include(v => v.Motos)
+                .FirstOrDefaultAsync(v => v.Id == novaVaga.Id);
             var resultDto = _mapper.Map<VagaDTO>(vagaCompleta);
 
             return CreatedAtAction(nameof(GetVaga), new { id = novaVaga.Id }, resultDto);
@@ -121,9 +132,18 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(404, "Vaga não encontrada")]
         public async Task<ActionResult<VagaDTO>> PutVaga(long id, VagaDTO dto)
         {
-            var vaga = await _context.Vagas.FindAsync(id);
+            var vaga = await _context.Vagas
+                .Include(v => v.Motos)
+                .FirstOrDefaultAsync(v => v.Id == id);
             if (vaga == null)
                 return NotFound();
+
+            // Verifica se já existe vaga com mesmo número no mesmo pátio (exceto esta vaga)
+            var vagaExistente = await _context.Vagas
+                .AnyAsync(v => v.Numero == dto.Numero && v.PatioId == dto.PatioId && v.Id != id);
+
+            if (vagaExistente)
+                return BadRequest("Já existe uma vaga com esse número neste pátio.");
 
             vaga.GetType().GetProperty("Numero")?.SetValue(vaga, dto.Numero);
             vaga.GetType().GetProperty("Tipo")?.SetValue(vaga, (TipoVaga)dto.Tipo);
@@ -132,7 +152,9 @@ namespace GeoSense.API.Controllers
 
             await _context.SaveChangesAsync();
 
-            var vagaAtualizada = await _context.Vagas.FindAsync(id);
+            var vagaAtualizada = await _context.Vagas
+                .Include(v => v.Motos)
+                .FirstOrDefaultAsync(v => v.Id == id);
             var resultDto = _mapper.Map<VagaDTO>(vagaAtualizada);
 
             return Ok(resultDto);

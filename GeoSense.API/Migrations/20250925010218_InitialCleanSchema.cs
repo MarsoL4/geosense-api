@@ -71,7 +71,7 @@ namespace GeoSense.API.Migrations
                     MODELO = table.Column<string>(type: "NVARCHAR2(50)", maxLength: 50, nullable: false),
                     PLACA = table.Column<string>(type: "NVARCHAR2(10)", maxLength: 10, nullable: false),
                     CHASSI = table.Column<string>(type: "NVARCHAR2(50)", maxLength: 50, nullable: false),
-                    PROBLEMA_IDENTIFICADO = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: false),
+                    PROBLEMA_IDENTIFICADO = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: true),
                     VAGA_ID = table.Column<long>(type: "NUMBER(19)", nullable: false)
                 },
                 constraints: table =>
@@ -171,6 +171,12 @@ namespace GeoSense.API.Migrations
                 name: "IX_USUARIO_EMAIL",
                 table: "USUARIO",
                 column: "EMAIL",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VAGA_NUMERO_PATIO_ID",
+                table: "VAGA",
+                columns: new[] { "NUMERO", "PATIO_ID" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
