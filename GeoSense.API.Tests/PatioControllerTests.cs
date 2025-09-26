@@ -3,6 +3,9 @@ using GeoSense.API.AutoMapper;
 using GeoSense.API.Controllers;
 using GeoSense.API.DTOs.Patio;
 using GeoSense.API.Infrastructure.Contexts;
+using GeoSense.API.Infrastructure.Repositories;
+using GeoSense.API.Infrastructure.Repositories.Interfaces;
+using GeoSense.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GeoSense.API.Infrastructure.Persistence;
@@ -28,8 +31,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IPatioRepository patioRepo = new PatioRepository(context);
+            var service = new PatioService(patioRepo);
+
             var mapper = CreateMapper();
-            var controller = new PatioController(context, mapper);
+            var controller = new PatioController(service, mapper);
 
             var dto = new PatioDTO { Nome = "Pátio Central" };
 
@@ -46,8 +53,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IPatioRepository patioRepo = new PatioRepository(context);
+            var service = new PatioService(patioRepo);
+
             var mapper = CreateMapper();
-            var controller = new PatioController(context, mapper);
+            var controller = new PatioController(service, mapper);
 
             var result = await controller.GetPatio(999);
 
@@ -66,8 +77,11 @@ namespace GeoSense.API.Tests
             context.Patios.Add(patio);
             await context.SaveChangesAsync();
 
+            IPatioRepository patioRepo = new PatioRepository(context);
+            var service = new PatioService(patioRepo);
+
             var mapper = CreateMapper();
-            var controller = new PatioController(context, mapper);
+            var controller = new PatioController(service, mapper);
 
             var dto = new PatioDTO { Nome = "Pátio Novo" };
             var result = await controller.PutPatio(patio.Id, dto);
@@ -83,8 +97,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IPatioRepository patioRepo = new PatioRepository(context);
+            var service = new PatioService(patioRepo);
+
             var mapper = CreateMapper();
-            var controller = new PatioController(context, mapper);
+            var controller = new PatioController(service, mapper);
 
             var dto = new PatioDTO { Nome = "Pátio Novo" };
             var result = await controller.PutPatio(999, dto);
@@ -105,8 +123,11 @@ namespace GeoSense.API.Tests
             context.Patios.Add(patio);
             await context.SaveChangesAsync();
 
+            IPatioRepository patioRepo = new PatioRepository(context);
+            var service = new PatioService(patioRepo);
+
             var mapper = CreateMapper();
-            var controller = new PatioController(context, mapper);
+            var controller = new PatioController(service, mapper);
 
             var result = await controller.DeletePatio(patio.Id);
 
@@ -121,8 +142,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IPatioRepository patioRepo = new PatioRepository(context);
+            var service = new PatioService(patioRepo);
+
             var mapper = CreateMapper();
-            var controller = new PatioController(context, mapper);
+            var controller = new PatioController(service, mapper);
 
             var result = await controller.DeletePatio(999);
 

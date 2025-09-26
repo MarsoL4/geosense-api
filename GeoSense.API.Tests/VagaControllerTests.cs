@@ -1,6 +1,9 @@
 ﻿using Xunit;
 using GeoSense.API.Controllers;
 using GeoSense.API.Infrastructure.Contexts;
+using GeoSense.API.Infrastructure.Repositories;
+using GeoSense.API.Infrastructure.Repositories.Interfaces;
+using GeoSense.API.Services;
 using Microsoft.EntityFrameworkCore;
 using GeoSense.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -34,8 +37,11 @@ namespace GeoSense.API.Tests
             context.Patios.Add(new Patio { Nome = "Pátio Central" });
             await context.SaveChangesAsync();
 
+            IVagaRepository vagaRepo = new VagaRepository(context);
+            var service = new VagaService(vagaRepo);
+
             var mapper = CreateMapper();
-            var controller = new VagaController(context, mapper);
+            var controller = new VagaController(service, mapper);
 
             var patio = context.Patios.FirstOrDefault();
             Assert.NotNull(patio);
@@ -61,8 +67,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IVagaRepository vagaRepo = new VagaRepository(context);
+            var service = new VagaService(vagaRepo);
+
             var mapper = CreateMapper();
-            var controller = new VagaController(context, mapper);
+            var controller = new VagaController(service, mapper);
 
             var result = await controller.GetVaga(999);
 
@@ -83,8 +93,11 @@ namespace GeoSense.API.Tests
             context.Vagas.Add(vaga);
             await context.SaveChangesAsync();
 
+            IVagaRepository vagaRepo = new VagaRepository(context);
+            var service = new VagaService(vagaRepo);
+
             var mapper = CreateMapper();
-            var controller = new VagaController(context, mapper);
+            var controller = new VagaController(service, mapper);
 
             var dto = new VagaDTO
             {
@@ -107,8 +120,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IVagaRepository vagaRepo = new VagaRepository(context);
+            var service = new VagaService(vagaRepo);
+
             var mapper = CreateMapper();
-            var controller = new VagaController(context, mapper);
+            var controller = new VagaController(service, mapper);
 
             var dto = new VagaDTO
             {
@@ -137,8 +154,11 @@ namespace GeoSense.API.Tests
             context.Vagas.Add(vaga);
             await context.SaveChangesAsync();
 
+            IVagaRepository vagaRepo = new VagaRepository(context);
+            var service = new VagaService(vagaRepo);
+
             var mapper = CreateMapper();
-            var controller = new VagaController(context, mapper);
+            var controller = new VagaController(service, mapper);
 
             var result = await controller.DeleteVaga(vaga.Id);
 
@@ -153,8 +173,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IVagaRepository vagaRepo = new VagaRepository(context);
+            var service = new VagaService(vagaRepo);
+
             var mapper = CreateMapper();
-            var controller = new VagaController(context, mapper);
+            var controller = new VagaController(service, mapper);
 
             var result = await controller.DeleteVaga(999);
 

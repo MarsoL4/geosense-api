@@ -3,6 +3,9 @@ using GeoSense.API.AutoMapper;
 using GeoSense.API.Controllers;
 using GeoSense.API.DTOs.Usuario;
 using GeoSense.API.Infrastructure.Contexts;
+using GeoSense.API.Infrastructure.Repositories;
+using GeoSense.API.Infrastructure.Repositories.Interfaces;
+using GeoSense.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GeoSense.API.Infrastructure.Persistence;
@@ -28,8 +31,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IUsuarioRepository usuarioRepo = new UsuarioRepository(context);
+            var service = new UsuarioService(usuarioRepo);
+
             var mapper = CreateMapper();
-            var controller = new UsuarioController(context, mapper);
+            var controller = new UsuarioController(service, mapper);
 
             var dto = new UsuarioDTO
             {
@@ -52,8 +59,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IUsuarioRepository usuarioRepo = new UsuarioRepository(context);
+            var service = new UsuarioService(usuarioRepo);
+
             var mapper = CreateMapper();
-            var controller = new UsuarioController(context, mapper);
+            var controller = new UsuarioController(service, mapper);
 
             var result = await controller.GetUsuario(999);
 
@@ -72,8 +83,11 @@ namespace GeoSense.API.Tests
             context.Usuarios.Add(usuario);
             await context.SaveChangesAsync();
 
+            IUsuarioRepository usuarioRepo = new UsuarioRepository(context);
+            var service = new UsuarioService(usuarioRepo);
+
             var mapper = CreateMapper();
-            var controller = new UsuarioController(context, mapper);
+            var controller = new UsuarioController(service, mapper);
 
             var dto = new UsuarioDTO
             {
@@ -96,8 +110,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IUsuarioRepository usuarioRepo = new UsuarioRepository(context);
+            var service = new UsuarioService(usuarioRepo);
+
             var mapper = CreateMapper();
-            var controller = new UsuarioController(context, mapper);
+            var controller = new UsuarioController(service, mapper);
 
             var dto = new UsuarioDTO
             {
@@ -124,8 +142,11 @@ namespace GeoSense.API.Tests
             context.Usuarios.Add(usuario);
             await context.SaveChangesAsync();
 
+            IUsuarioRepository usuarioRepo = new UsuarioRepository(context);
+            var service = new UsuarioService(usuarioRepo);
+
             var mapper = CreateMapper();
-            var controller = new UsuarioController(context, mapper);
+            var controller = new UsuarioController(service, mapper);
 
             var result = await controller.DeleteUsuario(usuario.Id);
 
@@ -140,8 +161,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IUsuarioRepository usuarioRepo = new UsuarioRepository(context);
+            var service = new UsuarioService(usuarioRepo);
+
             var mapper = CreateMapper();
-            var controller = new UsuarioController(context, mapper);
+            var controller = new UsuarioController(service, mapper);
 
             var result = await controller.DeleteUsuario(999);
 

@@ -1,6 +1,9 @@
 ﻿using Xunit;
 using GeoSense.API.Controllers;
 using GeoSense.API.Infrastructure.Contexts;
+using GeoSense.API.Infrastructure.Repositories;
+using GeoSense.API.Infrastructure.Repositories.Interfaces;
+using GeoSense.API.Services;
 using Microsoft.EntityFrameworkCore;
 using GeoSense.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -33,8 +36,11 @@ namespace GeoSense.API.Tests
             context.Vagas.Add(new Vaga(1, 1));
             await context.SaveChangesAsync();
 
+            IMotoRepository motoRepo = new MotoRepository(context);
+            var service = new MotoService(motoRepo);
+
             var mapper = CreateMapper();
-            var controller = new MotoController(context, mapper);
+            var controller = new MotoController(service, mapper);
 
             var dto = new MotoDTO
             {
@@ -73,8 +79,11 @@ namespace GeoSense.API.Tests
             context.Motos.Add(moto);
             await context.SaveChangesAsync();
 
+            IMotoRepository motoRepo = new MotoRepository(context);
+            var service = new MotoService(motoRepo);
+
             var mapper = CreateMapper();
-            var controller = new MotoController(context, mapper);
+            var controller = new MotoController(service, mapper);
 
             var dto = new MotoDTO
             {
@@ -98,8 +107,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IMotoRepository motoRepo = new MotoRepository(context);
+            var service = new MotoService(motoRepo);
+
             var mapper = CreateMapper();
-            var controller = new MotoController(context, mapper);
+            var controller = new MotoController(service, mapper);
 
             var dto = new MotoDTO
             {
@@ -138,8 +151,11 @@ namespace GeoSense.API.Tests
             context.Motos.Add(moto);
             await context.SaveChangesAsync();
 
+            IMotoRepository motoRepo = new MotoRepository(context);
+            var service = new MotoService(motoRepo);
+
             var mapper = CreateMapper();
-            var controller = new MotoController(context, mapper);
+            var controller = new MotoController(service, mapper);
 
             var result = await controller.DeleteMoto(moto.Id);
 
@@ -154,8 +170,12 @@ namespace GeoSense.API.Tests
                 .Options;
 
             using var context = new GeoSenseContext(options);
+
+            IMotoRepository motoRepo = new MotoRepository(context);
+            var service = new MotoService(motoRepo);
+
             var mapper = CreateMapper();
-            var controller = new MotoController(context, mapper);
+            var controller = new MotoController(service, mapper);
 
             var result = await controller.DeleteMoto(999);
 
