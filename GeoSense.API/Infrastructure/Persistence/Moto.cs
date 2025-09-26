@@ -21,8 +21,5 @@
             ProblemaIdentificado = problema_identificado;
             VagaId = vaga_id;
         }
-
-        public ICollection<Defeito> Defeitos { get; set; } = [];
-        public ICollection<AlocacaoMoto> Alocacoes { get; set; } = [];
     }
 }

@@ -23,6 +23,5 @@ namespace GeoSense.API.Infrastructure.Persistence
         }
 
         public ICollection<Moto> Motos { get; set; } = [];
-        public ICollection<AlocacaoMoto> Alocacoes { get; set; } = [];
     }
 }

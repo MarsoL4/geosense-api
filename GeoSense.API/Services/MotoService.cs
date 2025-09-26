@@ -4,16 +4,10 @@ using GeoSense.Infrastructure.Repositories.Interfaces;
 
 namespace GeoSense.API.Services
 {
-    public class MotoService
+    public class MotoService(IMotoRepository repo, IMapper mapper)
     {
-        private readonly IMotoRepository _repo;
-        private readonly IMapper _mapper;
-
-        public MotoService(IMotoRepository repo, IMapper mapper)
-        {
-            _repo = repo;
-            _mapper = mapper;
-        }
+        private readonly IMotoRepository _repo = repo;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<List<MotoDetalhesDTO>> ObterTodasAsync()
         {
