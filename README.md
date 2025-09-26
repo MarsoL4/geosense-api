@@ -1,6 +1,6 @@
 # GeoSense API
 
-GeoSense API é uma solução RESTful desenvolvida em .NET para o gerenciamento de motos, vagas, pátios, defeitos, alocações e usuários em ambientes de manutenção e estacionamento. O projeto utiliza arquitetura em camadas, Entity Framework Core, Oracle como banco de dados e documentação completa via Swagger/OpenAPI.
+GeoSense API é uma solução RESTful desenvolvida em .NET para o gerenciamento de motos, vagas, pátios e usuários em ambientes de manutenção e estacionamento. O projeto utiliza arquitetura em camadas, Entity Framework Core, Oracle como banco de dados e documentação completa via Swagger/OpenAPI.
 
 ---
 
@@ -14,7 +14,7 @@ GeoSense API é uma solução RESTful desenvolvida em .NET para o gerenciamento 
 
 ## 🏗 Justificativa do Domínio e Arquitetura
 
-O domínio foi escolhido para atender à necessidade de controle eficiente do fluxo de motos em pátios de manutenção, oficinas ou estacionamentos. O sistema permite cadastro, alocação e histórico de motos, gestão de vagas, controle de defeitos e usuários com diferentes permissões.
+O domínio foi escolhido para atender à necessidade de controle eficiente do fluxo de motos em pátios de manutenção, oficinas ou estacionamentos. O sistema permite cadastro, alocação e histórico de motos, gestão de vagas, controle de usuários com diferentes permissões.
 
 A arquitetura segue boas práticas REST, separação de responsabilidades (camadas Controller, Service, Repository), e utiliza recursos avançados como paginação, HATEOAS, DTOs e exemplos interativos no Swagger.
 
@@ -57,8 +57,6 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
 - **Vaga:** Gerenciamento de vagas disponíveis em pátios, incluindo status e tipo.
 - **Usuário:** Cadastro de usuários do sistema, com controle de papéis (administrador, mecânico) e autenticação.
 - **Pátio:** Cadastro e gestão dos pátios onde as vagas são distribuídas.
-- **Defeito:** Registro dos defeitos identificados em motos.
-- **AlocaçãoMoto:** Histórico de alocações de motos em vagas, incluindo data/hora e mecânico responsável.
 
 ---
 
@@ -453,57 +451,3 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
 
 - Todos os endpoints possuem descrição, parâmetros documentados, exemplos de payload (POST/PUT) e modelos de dados.
 - Acesse `/swagger` para explorar e testar a API interativamente.
-
----
-
-## 🧪 Comando para rodar os testes
-
-```bash
-dotnet test
-```
-
----
-
-## 🏆 Exemplos de Modelos de Dados
-
-### MotoDTO
-
-```json
-{
-  "modelo": "Honda CG 160",
-  "placa": "ABC1D23",
-  "chassi": "9C2JC4110JR000001",
-  "problemaIdentificado": "Motor com ruído excessivo",
-  "vagaId": 1
-}
-```
-
-### VagaDTO
-
-```json
-{
-  "numero": 101,
-  "tipo": 0,
-  "status": 0,
-  "patioId": 1
-}
-```
-
-### UsuarioDTO
-
-```json
-{
-  "nome": "Rafael de Souza Pinto",
-  "email": "rafael.pinto@exemplo.com",
-  "senha": "12345678",
-  "tipo": 0
-}
-```
-
-### PatioDTO
-
-```json
-{
-  "nome": "Pátio Central"
-}
-```
