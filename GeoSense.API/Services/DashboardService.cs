@@ -2,6 +2,9 @@
 
 namespace GeoSense.API.Services
 {
+    /// <summary>
+    /// Serviço responsável por retornar dados agregados para o dashboard.
+    /// </summary>
     public class DashboardService(IMotoRepository motoRepo, IVagaRepository vagaRepo)
     {
         private readonly IMotoRepository _motoRepo = motoRepo;

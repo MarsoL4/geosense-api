@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GeoSense.API.Infrastructure.Mappings
 {
+    /// <summary>
+    /// Configuração de mapeamento da entidade Moto para o banco de dados.
+    /// Define restrições, relacionamentos, unicidade e propriedades obrigatórias.
+    /// </summary>
     public class MotoMapping : IEntityTypeConfiguration<Moto>
     {
         public void Configure(EntityTypeBuilder<Moto> builder)
@@ -20,14 +24,16 @@ namespace GeoSense.API.Infrastructure.Mappings
 
             builder.Property(m => m.VagaId).HasColumnName("VAGA_ID").IsRequired();
 
+            // Relacionamento: Cada Moto está vinculada a uma Vaga, uma vaga pode ter várias motos (histórico)
             builder.HasOne(m => m.Vaga)
                 .WithMany(v => v.Motos)
                 .HasForeignKey(m => m.VagaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Restrições de unicidade
+            // Restrições de unicidade para garantir que não haja placas ou chassis duplicados
             builder.HasIndex(m => m.Placa).IsUnique();
             builder.HasIndex(m => m.Chassi).IsUnique();
+            // Garante que uma vaga só pode estar com uma moto alocada por vez
             builder.HasIndex(m => m.VagaId).IsUnique();
         }
     }

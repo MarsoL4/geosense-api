@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GeoSense.API.Infrastructure.Mappings
 {
+    /// <summary>
+    /// Configuração de mapeamento da entidade Usuario para o banco de dados.
+    /// Define restrições de unicidade e propriedades obrigatórias.
+    /// </summary>
     public class UsuarioMapping : IEntityTypeConfiguration<Usuario>
     {
         public void Configure(EntityTypeBuilder<Usuario> builder)
@@ -18,6 +22,7 @@ namespace GeoSense.API.Infrastructure.Mappings
             builder.Property(u => u.Senha).HasColumnName("SENHA").HasMaxLength(255).IsRequired();
             builder.Property(u => u.Tipo).HasColumnName("TIPO").HasConversion<int>().IsRequired();
 
+            // Garante que o email do usuário seja único
             builder.HasIndex(u => u.Email).IsUnique();
         }
     }
