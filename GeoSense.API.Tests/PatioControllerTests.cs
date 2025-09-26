@@ -62,7 +62,7 @@ namespace GeoSense.API.Tests
 
             var result = await controller.GetPatio(999);
 
-            Assert.IsType<NotFoundResult>(result.Result);
+            Assert.IsType<NotFoundObjectResult>(result.Result);
         }
 
         [Fact]

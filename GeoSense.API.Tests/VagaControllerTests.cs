@@ -76,7 +76,7 @@ namespace GeoSense.API.Tests
 
             var result = await controller.GetVaga(999);
 
-            Assert.IsType<NotFoundResult>(result.Result);
+            Assert.IsType<NotFoundObjectResult>(result.Result);
         }
 
         [Fact]
