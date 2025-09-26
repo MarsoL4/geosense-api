@@ -2,10 +2,10 @@
 using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Services;
 using GeoSense.API.Infrastructure.Repositories;
-using GeoSense.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
+using GeoSense.API.Infrastructure.Repositories.Interfaces;
 
 namespace GeoSense.API
 {

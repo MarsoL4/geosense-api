@@ -1,6 +1,6 @@
 ﻿using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Infrastructure.Persistence;
-using GeoSense.Infrastructure.Repositories.Interfaces;
+using GeoSense.API.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeoSense.API.Infrastructure.Repositories

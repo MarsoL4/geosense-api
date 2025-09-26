@@ -1,6 +1,6 @@
 ﻿using GeoSense.API.Infrastructure.Persistence;
 
-namespace GeoSense.Infrastructure.Repositories.Interfaces
+namespace GeoSense.API.Infrastructure.Repositories.Interfaces
 {
     public interface IMotoRepository
     {
