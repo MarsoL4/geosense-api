@@ -124,29 +124,23 @@ namespace GeoSense.API.Controllers
         /// </remarks>
         /// <param name="id">Identificador único do pátio</param>
         /// <param name="_dto">Novos dados do pátio</param>
-        /// <response code="200">Pátio atualizado com sucesso</response>
+        /// <response code="204">Pátio atualizado com sucesso (No Content)</response>
         /// <response code="404">Pátio não encontrado</response>
         [HttpPut("{id}")]
         [SwaggerRequestExample(typeof(PatioDTO), typeof(GeoSense.API.Examples.PatioDTOExample))]
-        [SwaggerResponse(200, "Pátio atualizado com sucesso", typeof(object))]
+        [SwaggerResponse(204, "Pátio atualizado com sucesso (No Content)")]
         [SwaggerResponse(404, "Pátio não encontrado")]
-        public async Task<ActionResult<PatioDTO>> PutPatio(long id, PatioDTO _dto)
+        public async Task<IActionResult> PutPatio(long id, PatioDTO _dto)
         {
             var patio = await _context.Patios.FindAsync(id);
             if (patio == null)
-                return NotFound(new { mensagem = "Pátio não encontrado." });
+                return NotFound();
 
             patio.Nome = _dto.Nome;
             await _context.SaveChangesAsync();
 
-            var patioAtualizado = await _context.Patios.FindAsync(id);
-            var resultDto = _mapper.Map<PatioDTO>(patioAtualizado);
-
-            return Ok(new
-            {
-                mensagem = "Pátio atualizado com sucesso.",
-                dados = resultDto
-            });
+            // Retorno padrão REST: 204 No Content
+            return NoContent();
         }
 
         /// <summary>
@@ -156,23 +150,21 @@ namespace GeoSense.API.Controllers
         /// Remove o pátio identificado por <b>id</b> do sistema de forma permanente.
         /// </remarks>
         /// <param name="id">Identificador único do pátio</param>
-        /// <response code="200">Pátio removido com sucesso</response>
+        /// <response code="204">Pátio removido com sucesso (No Content)</response>
         /// <response code="404">Pátio não encontrado</response>
         [HttpDelete("{id}")]
-        [SwaggerResponse(200, "Pátio removido com sucesso", typeof(object))]
+        [SwaggerResponse(204, "Pátio removido com sucesso (No Content)")]
         [SwaggerResponse(404, "Pátio não encontrado")]
         public async Task<IActionResult> DeletePatio(long id)
         {
             var patio = await _context.Patios.FindAsync(id);
             if (patio == null)
-                return NotFound(new { mensagem = "Pátio não encontrado." });
+                return NotFound();
 
             _context.Patios.Remove(patio);
             await _context.SaveChangesAsync();
-            return Ok(new
-            {
-                mensagem = "Pátio deletado com sucesso."
-            });
+            // Retorno padrão REST: 204 No Content
+            return NoContent();
         }
     }
 }

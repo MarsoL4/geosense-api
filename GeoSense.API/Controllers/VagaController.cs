@@ -128,19 +128,21 @@ namespace GeoSense.API.Controllers
         /// </remarks>
         /// <param name="id">Identificador único da vaga</param>
         /// <param name="dto">Dados da vaga a serem atualizados</param>
-        /// <response code="200">Vaga atualizada com sucesso</response>
+        /// <response code="204">Vaga atualizada com sucesso (No Content)</response>
+        /// <response code="400">Vaga duplicada no mesmo pátio</response>
         /// <response code="404">Vaga não encontrada</response>
         [HttpPut("{id}")]
         [SwaggerRequestExample(typeof(VagaDTO), typeof(GeoSense.API.Examples.VagaDTOExample))]
-        [SwaggerResponse(200, "Vaga atualizada com sucesso", typeof(object))]
+        [SwaggerResponse(204, "Vaga atualizada com sucesso (No Content)")]
+        [SwaggerResponse(400, "Vaga duplicada no mesmo pátio")]
         [SwaggerResponse(404, "Vaga não encontrada")]
-        public async Task<ActionResult<VagaDTO>> PutVaga(long id, VagaDTO dto)
+        public async Task<IActionResult> PutVaga(long id, VagaDTO dto)
         {
             var vaga = await _context.Vagas
                 .Include(v => v.Motos)
                 .FirstOrDefaultAsync(v => v.Id == id);
             if (vaga == null)
-                return NotFound(new { mensagem = "Vaga não encontrada." });
+                return NotFound();
 
             // Verifica se já existe vaga com mesmo número no mesmo pátio (exceto esta vaga)
             var vagaExistente = await _context.Vagas
@@ -156,16 +158,8 @@ namespace GeoSense.API.Controllers
 
             await _context.SaveChangesAsync();
 
-            var vagaAtualizada = await _context.Vagas
-                .Include(v => v.Motos)
-                .FirstOrDefaultAsync(v => v.Id == id);
-            var resultDto = _mapper.Map<VagaDTO>(vagaAtualizada);
-
-            return Ok(new
-            {
-                mensagem = "Vaga atualizada com sucesso.",
-                dados = resultDto
-            });
+            // Retorno padrão REST: 204 No Content
+            return NoContent();
         }
 
         /// <summary>
@@ -175,23 +169,21 @@ namespace GeoSense.API.Controllers
         /// Remove a vaga informada pelo ID.
         /// </remarks>
         /// <param name="id">Identificador único da vaga</param>
-        /// <response code="200">Vaga removida</response>
+        /// <response code="204">Vaga removida com sucesso (No Content)</response>
         /// <response code="404">Vaga não encontrada</response>
         [HttpDelete("{id}")]
-        [SwaggerResponse(200, "Vaga removida com sucesso", typeof(object))]
+        [SwaggerResponse(204, "Vaga removida com sucesso (No Content)")]
         [SwaggerResponse(404, "Vaga não encontrada")]
         public async Task<IActionResult> DeleteVaga(long id)
         {
             var vaga = await _context.Vagas.FindAsync(id);
             if (vaga == null)
-                return NotFound(new { mensagem = "Vaga não encontrada." });
+                return NotFound();
 
             _context.Vagas.Remove(vaga);
             await _context.SaveChangesAsync();
-            return Ok(new
-            {
-                mensagem = "Vaga deletada com sucesso."
-            });
+            // Retorno padrão REST: 204 No Content
+            return NoContent();
         }
     }
 }

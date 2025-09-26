@@ -89,19 +89,19 @@ namespace GeoSense.API.Controllers
         /// </remarks>
         /// <param name="id">Identificador único da moto</param>
         /// <param name="dto">Dados da moto a serem atualizados</param>
-        /// <response code="200">Moto atualizada com sucesso</response>
+        /// <response code="204">Moto atualizada com sucesso (No Content)</response>
         /// <response code="400">Alguma restrição de negócio foi violada</response>
         /// <response code="404">Moto não encontrada</response>
         [HttpPut("{id}")]
         [SwaggerRequestExample(typeof(MotoDTO), typeof(GeoSense.API.Examples.MotoDTOExample))]
-        [SwaggerResponse(200, "Moto atualizada com sucesso", typeof(object))]
+        [SwaggerResponse(204, "Moto atualizada com sucesso (No Content)")]
         [SwaggerResponse(400, "Restrição de negócio violada")]
         [SwaggerResponse(404, "Moto não encontrada")]
         public async Task<IActionResult> PutMoto(long id, MotoDTO dto)
         {
             var moto = await _context.Motos.FindAsync(id);
             if (moto == null)
-                return NotFound(new { mensagem = "Moto não encontrada." });
+                return NotFound();
 
             var vagaOcupada = await _context.Motos.CountAsync(m => m.VagaId == dto.VagaId && m.Id != id) > 0;
             if (vagaOcupada)
@@ -123,14 +123,8 @@ namespace GeoSense.API.Controllers
 
             await _context.SaveChangesAsync();
 
-            var motoAtualizada = await _context.Motos.FirstOrDefaultAsync(m => m.Id == id);
-            var dtoAtualizado = _mapper.Map<MotoDetalhesDTO>(motoAtualizada);
-
-            return Ok(new
-            {
-                mensagem = "Moto atualizada com sucesso.",
-                dados = dtoAtualizado
-            });
+            // Retorno padrão REST: 204 No Content
+            return NoContent();
         }
 
         /// <summary>
@@ -192,24 +186,22 @@ namespace GeoSense.API.Controllers
         /// Remove a moto informada pelo ID.
         /// </remarks>
         /// <param name="id">Identificador único da moto</param>
-        /// <response code="200">Moto removida</response>
+        /// <response code="204">Moto removida com sucesso (No Content)</response>
         /// <response code="404">Moto não encontrada</response>
         [HttpDelete("{id}")]
-        [SwaggerResponse(200, "Moto removida com sucesso", typeof(object))]
+        [SwaggerResponse(204, "Moto removida com sucesso (No Content)")]
         [SwaggerResponse(404, "Moto não encontrada")]
         public async Task<IActionResult> DeleteMoto(long id)
         {
             var moto = await _context.Motos.FindAsync(id);
             if (moto == null)
-                return NotFound(new { mensagem = "Moto não encontrada." });
+                return NotFound();
 
             _context.Motos.Remove(moto);
             await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                mensagem = "Moto deletada com sucesso."
-            });
+            // Retorno padrão REST: 204 No Content
+            return NoContent();
         }
     }
 }
