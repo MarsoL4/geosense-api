@@ -41,7 +41,7 @@ namespace GeoSense.API.Infrastructure.Repositories
         public async Task<bool> EmailExisteAsync(string email, long? ignoreId = null)
         {
             return await _context.Usuarios
-                .AnyAsync(u => u.Email == email && (!ignoreId.HasValue || u.Id != ignoreId.Value));
+                .CountAsync(u => u.Email == email && (!ignoreId.HasValue || u.Id != ignoreId.Value)) > 0;
         }
     }
 }
