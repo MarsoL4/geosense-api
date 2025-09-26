@@ -1,6 +1,8 @@
 ﻿using GeoSense.API.AutoMapper;
 using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Services;
+using GeoSense.API.Infrastructure.Repositories;
+using GeoSense.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
@@ -14,6 +16,7 @@ namespace GeoSense.API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddScoped<MotoService>();
+            builder.Services.AddScoped<IMotoRepository, MotoRepository>();
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
