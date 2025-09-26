@@ -2,10 +2,10 @@
 using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Services;
 using GeoSense.API.Infrastructure.Repositories;
+using GeoSense.API.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
-using GeoSense.API.Infrastructure.Repositories.Interfaces;
 
 namespace GeoSense.API
 {
@@ -17,6 +17,17 @@ namespace GeoSense.API
 
             builder.Services.AddScoped<MotoService>();
             builder.Services.AddScoped<IMotoRepository, MotoRepository>();
+
+            builder.Services.AddScoped<VagaService>();
+            builder.Services.AddScoped<IVagaRepository, VagaRepository>();
+
+            builder.Services.AddScoped<PatioService>();
+            builder.Services.AddScoped<IPatioRepository, PatioRepository>();
+
+            builder.Services.AddScoped<UsuarioService>();
+            builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+            builder.Services.AddScoped<DashboardService>();
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 

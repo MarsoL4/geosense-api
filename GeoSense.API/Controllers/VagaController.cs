@@ -3,10 +3,8 @@ using GeoSense.API.Domain.Enums;
 using GeoSense.API.DTOs;
 using GeoSense.API.DTOs.Vaga;
 using GeoSense.API.Helpers;
-using GeoSense.API.Infrastructure.Contexts;
-using GeoSense.API.Infrastructure.Persistence;
+using GeoSense.API.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -14,9 +12,9 @@ namespace GeoSense.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VagaController(GeoSenseContext context, IMapper mapper) : ControllerBase
+    public class VagaController(VagaService service, IMapper mapper) : ControllerBase
     {
-        private readonly GeoSenseContext _context = context;
+        private readonly VagaService _service = service;
         private readonly IMapper _mapper = mapper;
 
         /// <summary>
@@ -32,14 +30,10 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(200, "Lista paginada de vagas cadastradas", typeof(PagedHateoasDTO<VagaDTO>))]
         public async Task<ActionResult<PagedHateoasDTO<VagaDTO>>> GetVagas([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var query = _context.Vagas.Include(v => v.Motos);
-            var totalCount = await query.CountAsync();
-            var vagas = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            var items = _mapper.Map<List<VagaDTO>>(vagas);
+            var vagas = await _service.ObterTodasAsync();
+            var totalCount = vagas.Count;
+            var paged = vagas.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var items = _mapper.Map<List<VagaDTO>>(paged);
 
             var links = HateoasHelper.GetPagedLinks(Url, "Vagas", page, pageSize, totalCount);
 
@@ -69,9 +63,7 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(404, "Vaga não encontrada")]
         public async Task<ActionResult<VagaDTO>> GetVaga(long id)
         {
-            var vaga = await _context.Vagas
-                .Include(v => v.Motos)
-                .FirstOrDefaultAsync(v => v.Id == id);
+            var vaga = await _service.ObterPorIdAsync(id);
 
             if (vaga == null)
                 return NotFound(new { mensagem = "Vaga não encontrada." });
@@ -93,24 +85,19 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(201, "Vaga criada com sucesso", typeof(object))]
         public async Task<ActionResult<VagaDTO>> PostVaga(VagaDTO dto)
         {
-            // Verifica se já existe vaga com mesmo número no mesmo pátio
-            var vagaExistente = await _context.Vagas
-                .CountAsync(v => v.Numero == dto.Numero && v.PatioId == dto.PatioId) > 0;
+            var vagas = await _service.ObterTodasAsync();
+            var vagaExistente = vagas.Any(v => v.Numero == dto.Numero && v.PatioId == dto.PatioId);
 
             if (vagaExistente)
                 return BadRequest(new { mensagem = "Já existe uma vaga com esse número neste pátio." });
 
-            var novaVaga = new Vaga(dto.Numero, dto.PatioId);
-
+            var novaVaga = new GeoSense.API.Infrastructure.Persistence.Vaga(dto.Numero, dto.PatioId);
             novaVaga.GetType().GetProperty("Tipo")?.SetValue(novaVaga, (TipoVaga)dto.Tipo);
             novaVaga.GetType().GetProperty("Status")?.SetValue(novaVaga, (StatusVaga)dto.Status);
 
-            _context.Vagas.Add(novaVaga);
-            await _context.SaveChangesAsync();
+            await _service.AdicionarAsync(novaVaga);
 
-            var vagaCompleta = await _context.Vagas
-                .Include(v => v.Motos)
-                .FirstOrDefaultAsync(v => v.Id == novaVaga.Id);
+            var vagaCompleta = await _service.ObterPorIdAsync(novaVaga.Id);
             var resultDto = _mapper.Map<VagaDTO>(vagaCompleta);
 
             return CreatedAtAction(nameof(GetVaga), new { id = novaVaga.Id }, new
@@ -138,15 +125,12 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(404, "Vaga não encontrada")]
         public async Task<IActionResult> PutVaga(long id, VagaDTO dto)
         {
-            var vaga = await _context.Vagas
-                .Include(v => v.Motos)
-                .FirstOrDefaultAsync(v => v.Id == id);
+            var vaga = await _service.ObterPorIdAsync(id);
             if (vaga == null)
                 return NotFound();
 
-            // Verifica se já existe vaga com mesmo número no mesmo pátio (exceto esta vaga)
-            var vagaExistente = await _context.Vagas
-                .CountAsync(v => v.Numero == dto.Numero && v.PatioId == dto.PatioId && v.Id != id) > 0;
+            var vagas = await _service.ObterTodasAsync();
+            var vagaExistente = vagas.Any(v => v.Numero == dto.Numero && v.PatioId == dto.PatioId && v.Id != id);
 
             if (vagaExistente)
                 return BadRequest(new { mensagem = "Já existe uma vaga com esse número neste pátio." });
@@ -156,9 +140,8 @@ namespace GeoSense.API.Controllers
             vaga.GetType().GetProperty("Status")?.SetValue(vaga, (StatusVaga)dto.Status);
             vaga.GetType().GetProperty("PatioId")?.SetValue(vaga, dto.PatioId);
 
-            await _context.SaveChangesAsync();
+            await _service.AtualizarAsync(vaga);
 
-            // Retorno padrão REST: 204 No Content
             return NoContent();
         }
 
@@ -176,13 +159,11 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(404, "Vaga não encontrada")]
         public async Task<IActionResult> DeleteVaga(long id)
         {
-            var vaga = await _context.Vagas.FindAsync(id);
+            var vaga = await _service.ObterPorIdAsync(id);
             if (vaga == null)
                 return NotFound();
 
-            _context.Vagas.Remove(vaga);
-            await _context.SaveChangesAsync();
-            // Retorno padrão REST: 204 No Content
+            await _service.RemoverAsync(vaga);
             return NoContent();
         }
     }

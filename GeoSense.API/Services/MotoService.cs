@@ -1,34 +1,36 @@
-﻿using AutoMapper;
-using GeoSense.API.DTOs.Moto;
+﻿using GeoSense.API.DTOs.Moto;
+using GeoSense.API.Infrastructure.Persistence;
 using GeoSense.API.Infrastructure.Repositories.Interfaces;
 
 namespace GeoSense.API.Services
 {
-    public class MotoService(IMotoRepository repo, IMapper mapper)
+    public class MotoService(IMotoRepository repo)
     {
         private readonly IMotoRepository _repo = repo;
-        private readonly IMapper _mapper = mapper;
 
-        public async Task<List<MotoDetalhesDTO>> ObterTodasAsync()
+        public async Task<List<Moto>> ObterTodasAsync()
         {
-            var motos = await _repo.ObterTodasAsync();
-            return _mapper.Map<List<MotoDetalhesDTO>>(motos);
+            return await _repo.ObterTodasAsync();
         }
 
-        public async Task<MotoDetalhesDTO?> ObterPorIdAsync(long id)
+        public async Task<Moto?> ObterPorIdAsync(long id)
         {
-            var moto = await _repo.ObterPorIdComVagaEDefeitosAsync(id);
-            if (moto == null) return null;
+            return await _repo.ObterPorIdComVagaEDefeitosAsync(id);
+        }
 
-            return new MotoDetalhesDTO
-            {
-                Id = moto.Id,
-                Modelo = moto.Modelo,
-                Placa = moto.Placa,
-                Chassi = moto.Chassi,
-                ProblemaIdentificado = moto.ProblemaIdentificado,
-                VagaId = moto.VagaId
-            };
+        public async Task<Moto> AdicionarAsync(Moto moto)
+        {
+            return await _repo.AdicionarAsync(moto);
+        }
+
+        public async Task AtualizarAsync(Moto moto)
+        {
+            await _repo.AtualizarAsync(moto);
+        }
+
+        public async Task RemoverAsync(Moto moto)
+        {
+            await _repo.RemoverAsync(moto);
         }
     }
 }

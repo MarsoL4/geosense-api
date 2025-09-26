@@ -2,10 +2,9 @@
 using GeoSense.API.DTOs;
 using GeoSense.API.DTOs.Moto;
 using GeoSense.API.Helpers;
-using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Infrastructure.Persistence;
+using GeoSense.API.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -13,9 +12,9 @@ namespace GeoSense.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MotoController(GeoSenseContext context, IMapper mapper) : ControllerBase
+    public class MotoController(MotoService service, IMapper mapper) : ControllerBase
     {
-        private readonly GeoSenseContext _context = context;
+        private readonly MotoService _service = service;
         private readonly IMapper _mapper = mapper;
 
         /// <summary>
@@ -31,14 +30,10 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(200, "Lista paginada de motos cadastradas", typeof(PagedHateoasDTO<MotoDetalhesDTO>))]
         public async Task<ActionResult<PagedHateoasDTO<MotoDetalhesDTO>>> GetMotos([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var query = _context.Motos.Include(m => m.Vaga);
-            var totalCount = await query.CountAsync();
-            var motos = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            var items = _mapper.Map<List<MotoDetalhesDTO>>(motos);
+            var motos = await _service.ObterTodasAsync();
+            var totalCount = motos.Count;
+            var paged = motos.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var items = _mapper.Map<List<MotoDetalhesDTO>>(paged);
 
             var links = HateoasHelper.GetPagedLinks(Url, "Motos", page, pageSize, totalCount);
 
@@ -68,8 +63,7 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(404, "Moto não encontrada")]
         public async Task<ActionResult<MotoDetalhesDTO>> GetMoto(long id)
         {
-            var moto = await _context.Motos
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var moto = await _service.ObterPorIdAsync(id);
 
             if (moto == null)
             {
@@ -99,19 +93,22 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(404, "Moto não encontrada")]
         public async Task<IActionResult> PutMoto(long id, MotoDTO dto)
         {
-            var moto = await _context.Motos.FindAsync(id);
+            var moto = await _service.ObterPorIdAsync(id);
             if (moto == null)
                 return NotFound();
 
-            var vagaOcupada = await _context.Motos.CountAsync(m => m.VagaId == dto.VagaId && m.Id != id) > 0;
+            // Validações de negócio
+            var motos = await _service.ObterTodasAsync();
+
+            var vagaOcupada = motos.Any(m => m.VagaId == dto.VagaId && m.Id != id);
             if (vagaOcupada)
                 return BadRequest(new { mensagem = "Esta vaga já está ocupada por outra moto." });
 
-            var placaExiste = await _context.Motos.CountAsync(m => m.Placa == dto.Placa && m.Id != id) > 0;
+            var placaExiste = motos.Any(m => m.Placa == dto.Placa && m.Id != id);
             if (placaExiste)
                 return BadRequest(new { mensagem = "Já existe uma moto com essa placa." });
 
-            var chassiExiste = await _context.Motos.CountAsync(m => m.Chassi == dto.Chassi && m.Id != id) > 0;
+            var chassiExiste = motos.Any(m => m.Chassi == dto.Chassi && m.Id != id);
             if (chassiExiste)
                 return BadRequest(new { mensagem = "Já existe uma moto com esse chassi." });
 
@@ -121,9 +118,8 @@ namespace GeoSense.API.Controllers
             moto.ProblemaIdentificado = dto.ProblemaIdentificado;
             moto.VagaId = dto.VagaId;
 
-            await _context.SaveChangesAsync();
+            await _service.AtualizarAsync(moto);
 
-            // Retorno padrão REST: 204 No Content
             return NoContent();
         }
 
@@ -143,15 +139,17 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(400, "Restrição de negócio violada")]
         public async Task<ActionResult<MotoDetalhesDTO>> PostMoto(MotoDTO dto)
         {
-            var vagaOcupada = await _context.Motos.CountAsync(m => m.VagaId == dto.VagaId) > 0;
+            var motos = await _service.ObterTodasAsync();
+
+            var vagaOcupada = motos.Any(m => m.VagaId == dto.VagaId);
             if (vagaOcupada)
                 return BadRequest(new { mensagem = "Esta vaga já está ocupada por outra moto." });
 
-            var placaExiste = await _context.Motos.CountAsync(m => m.Placa == dto.Placa) > 0;
+            var placaExiste = motos.Any(m => m.Placa == dto.Placa);
             if (placaExiste)
                 return BadRequest(new { mensagem = "Já existe uma moto com essa placa." });
 
-            var chassiExiste = await _context.Motos.CountAsync(m => m.Chassi == dto.Chassi) > 0;
+            var chassiExiste = motos.Any(m => m.Chassi == dto.Chassi);
             if (chassiExiste)
                 return BadRequest(new { mensagem = "Já existe uma moto com esse chassi." });
 
@@ -164,11 +162,9 @@ namespace GeoSense.API.Controllers
                 VagaId = dto.VagaId
             };
 
-            _context.Motos.Add(novaMoto);
-            await _context.SaveChangesAsync();
+            await _service.AdicionarAsync(novaMoto);
 
-            var motoCompleta = await _context.Motos
-                .FirstOrDefaultAsync(m => m.Id == novaMoto.Id);
+            var motoCompleta = await _service.ObterPorIdAsync(novaMoto.Id);
 
             var resultDto = _mapper.Map<MotoDetalhesDTO>(motoCompleta);
 
@@ -193,14 +189,12 @@ namespace GeoSense.API.Controllers
         [SwaggerResponse(404, "Moto não encontrada")]
         public async Task<IActionResult> DeleteMoto(long id)
         {
-            var moto = await _context.Motos.FindAsync(id);
+            var moto = await _service.ObterPorIdAsync(id);
             if (moto == null)
                 return NotFound();
 
-            _context.Motos.Remove(moto);
-            await _context.SaveChangesAsync();
+            await _service.RemoverAsync(moto);
 
-            // Retorno padrão REST: 204 No Content
             return NoContent();
         }
     }
