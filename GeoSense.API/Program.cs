@@ -6,6 +6,8 @@ using GeoSense.API.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Text.Json;
 
 namespace GeoSense.API
 {
@@ -74,8 +76,30 @@ namespace GeoSense.API
             app.UseAuthorization();
             app.MapControllers();
 
-            // Endpoint de health check
-            app.MapHealthChecks("/health");
+            // Endpoint de health check com resposta em JSON estruturado
+            app.MapHealthChecks("/health", new HealthCheckOptions
+            {
+                ResponseWriter = async (context, report) =>
+                {
+                    context.Response.ContentType = "application/json";
+                    var result = JsonSerializer.Serialize(
+                        new
+                        {
+                            status = report.Status.ToString(),
+                            totalDuration = report.TotalDuration.ToString(),
+                            entries = report.Entries.ToDictionary(
+                                e => e.Key,
+                                e => new
+                                {
+                                    status = e.Value.Status.ToString(),
+                                    duration = e.Value.Duration.ToString(),
+                                    tags = e.Value.Tags
+                                }
+                            )
+                        }, new JsonSerializerOptions { WriteIndented = true });
+                    await context.Response.WriteAsync(result);
+                }
+            });
 
             app.Run();
         }
