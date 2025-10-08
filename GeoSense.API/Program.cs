@@ -43,6 +43,10 @@ namespace GeoSense.API
 
             builder.Services.AddEndpointsApiExplorer();
 
+            // Adiciona Health Checks
+            builder.Services.AddHealthChecks()
+                .AddDbContextCheck<GeoSenseContext>("Database");
+
             // Swagger customizado, incluindo exemplos de payloads
             builder.Services.AddSwaggerGen(options =>
             {
@@ -69,6 +73,10 @@ namespace GeoSense.API
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
+
+            // Endpoint de health check
+            app.MapHealthChecks("/health");
+
             app.Run();
         }
     }
