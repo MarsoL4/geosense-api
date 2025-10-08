@@ -1,12 +1,17 @@
 ﻿using GeoSense.API.AutoMapper;
 using GeoSense.API.Infrastructure.Contexts;
-using GeoSense.API.Services;
 using GeoSense.API.Infrastructure.Repositories;
 using GeoSense.API.Infrastructure.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Swashbuckle.AspNetCore.Filters;
-using System.Reflection;
+using GeoSense.API.Services;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Reflection;
 using System.Text.Json;
 
 namespace GeoSense.API
@@ -37,6 +42,21 @@ namespace GeoSense.API
             builder.Services.AddDbContext<GeoSenseContext>(options =>
                 options.UseOracle(connectionString));
 
+            // Configuração de versionamento da API
+            builder.Services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ReportApiVersions = true;
+                options.ApiVersionReader = new UrlSegmentApiVersionReader();
+            });
+
+            builder.Services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
+
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -49,32 +69,56 @@ namespace GeoSense.API
             builder.Services.AddHealthChecks()
                 .AddDbContextCheck<GeoSenseContext>("Database");
 
-            // Swagger customizado, incluindo exemplos de payloads
+            // Swagger com suporte a múltiplas versões
             builder.Services.AddSwaggerGen(options =>
             {
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename), true);
 
-                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "GeoSense API",
                     Version = "v1",
-                    Description = "API RESTful para gerenciamento de Motos, Vagas, Pátios e Usuários.\nEndpoints CRUD, paginação, HATEOAS e exemplos de payload."
+                    Description = "API RESTful para gerenciamento de Motos, Vagas, Pátios e Usuários. Endpoints CRUD, paginação, HATEOAS e exemplos de payload."
                 });
 
                 options.ExampleFilters();
+
+                // Versionamento do Swagger
+                options.DocInclusionPredicate((docName, apiDesc) =>
+                {
+                    if (!apiDesc.TryGetMethodInfo(out var methodInfo)) return false;
+
+                    var versions = methodInfo.DeclaringType?
+                        .GetCustomAttributes(typeof(ApiVersionAttribute), true)
+                        .Cast<ApiVersionAttribute>()
+                        .SelectMany(attr => attr.Versions);
+
+                    return versions?.Any(v => $"v{v}" == docName) ?? false;
+                });
             });
 
             builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
             var app = builder.Build();
 
+            var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(options =>
+            {
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                }
+            });
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
+
+            // Cache the JsonSerializerOptions instance to avoid performance issues (CA1869)
+            var cachedJsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
             // Endpoint de health check com resposta em JSON estruturado
             app.MapHealthChecks("/health", new HealthCheckOptions
@@ -96,7 +140,7 @@ namespace GeoSense.API
                                     tags = e.Value.Tags
                                 }
                             )
-                        }, new JsonSerializerOptions { WriteIndented = true });
+                        }, cachedJsonSerializerOptions);
                     await context.Response.WriteAsync(result);
                 }
             });
