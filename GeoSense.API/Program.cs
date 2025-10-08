@@ -42,7 +42,7 @@ namespace GeoSense.API
             builder.Services.AddDbContext<GeoSenseContext>(options =>
                 options.UseOracle(connectionString));
 
-            // Configuração de versionamento da API
+            // Versionamento de API
             builder.Services.AddApiVersioning(options =>
             {
                 options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -69,7 +69,7 @@ namespace GeoSense.API
             builder.Services.AddHealthChecks()
                 .AddDbContextCheck<GeoSenseContext>("Database");
 
-            // Swagger com suporte a múltiplas versões
+            // Adiciona SwaggerGen depois do VersionedApiExplorer
             builder.Services.AddSwaggerGen(options =>
             {
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -102,6 +102,7 @@ namespace GeoSense.API
 
             var app = builder.Build();
 
+            // GARANTA que o provider é resolvido AQUI antes do UseSwagger
             var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 
             app.UseSwagger();
@@ -109,7 +110,7 @@ namespace GeoSense.API
             {
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
-                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", $"GeoSense API {description.GroupName.ToUpperInvariant()}");
                 }
             });
 
