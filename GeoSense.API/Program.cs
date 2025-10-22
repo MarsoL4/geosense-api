@@ -13,6 +13,7 @@ using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text.Json;
+using System.Linq;
 
 namespace GeoSense.API
 {
@@ -89,12 +90,15 @@ namespace GeoSense.API
                 {
                     if (!apiDesc.TryGetMethodInfo(out var methodInfo)) return false;
 
+                    // Captura versões do atributo ApiVersion e compara pela MAJOR (v{Major}) com o nome do documento (ex: "v1")
                     var versions = methodInfo.DeclaringType?
-                        .GetCustomAttributes(typeof(ApiVersionAttribute), true)
-                        .Cast<ApiVersionAttribute>()
-                        .SelectMany(attr => attr.Versions);
+                        .GetCustomAttributes(true)
+                        .OfType<ApiVersionAttribute>()
+                        .SelectMany(attr => attr.Versions)
+                        .Select(v => $"v{v.MajorVersion}")
+                        .Distinct();
 
-                    return versions?.Any(v => $"v{v}" == docName) ?? false;
+                    return versions?.Any(v => v == docName) ?? false;
                 });
             });
 
