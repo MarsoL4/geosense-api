@@ -3,6 +3,7 @@ using GeoSense.API.Infrastructure.Contexts;
 using GeoSense.API.Infrastructure.Repositories;
 using GeoSense.API.Infrastructure.Repositories.Interfaces;
 using GeoSense.API.Services;
+using GeoSense.API.Middleware;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -13,7 +14,6 @@ using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text.Json;
-using System.Linq;
 
 namespace GeoSense.API
 {
@@ -100,6 +100,25 @@ namespace GeoSense.API
 
                     return versions?.Any(v => v == docName) ?? false;
                 });
+
+                options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+                {
+                    Description = "API Key necessária no cabeçalho X-Api-Key. Exemplo: 'X-Api-Key: SUA_CHAVE'",
+                    Name = "X-Api-Key",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "ApiKeyScheme"
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "ApiKey" }
+                        },
+                        new List<string>()
+                    }
+                });
             });
 
             builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
@@ -119,6 +138,9 @@ namespace GeoSense.API
             });
 
             app.UseHttpsRedirection();
+
+            app.UseMiddleware<ApiKeyMiddleware>();
+
             app.UseAuthorization();
             app.MapControllers();
 
