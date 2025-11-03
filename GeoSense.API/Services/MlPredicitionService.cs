@@ -1,59 +1,67 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
-using GeoSense.API.DTOs.ML;
 
 namespace GeoSense.API.Services
 {
     /// <summary>
-    /// Serviço de predição usando ML.NET (simples demonstração).
+    /// Serviço de predição usando ML.NET para tempo médio de permanência.
     /// </summary>
     public class MlPredictionService
     {
         private readonly MLContext _mlContext;
-        private readonly PredictionEngine<PredictMaintenanceDTO, MaintenancePrediction> _predictionEngine;
+        private readonly PredictionEngine<ModelInput, ModelOutput> _predictionEngine;
 
         public MlPredictionService()
         {
             _mlContext = new MLContext();
 
-            // EXEMPLO BÁSICO com pipeline fixa e threshold simples
-            var pipeline = _mlContext.Transforms.Concatenate("Features", nameof(PredictMaintenanceDTO.TipoVaga), nameof(PredictMaintenanceDTO.StatusVaga), nameof(PredictMaintenanceDTO.TempoUsoHoras))
-                .Append(_mlContext.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label", maximumNumberOfIterations: 10));
+            // Pipeline de regressão - simples demonstração
+            var pipeline = _mlContext.Transforms.Concatenate("Features", nameof(ModelInput.TotalMotos), nameof(ModelInput.VagasLivres), nameof(ModelInput.MotosComProblema))
+                .Append(_mlContext.Regression.Trainers.Sdca(labelColumnName: "Label"));
 
-            // Treinamento fictício - dados fake (TREINO AD HOC SÓ P/ DEMO)
-            var examples = new List<ModelInput>
+            // Treino com dados fictícios
+            var data = new List<ModelInput>
             {
-                new() { TipoVaga = 1, StatusVaga = 1, TempoUsoHoras = 10, Label = true },
-                new() { TipoVaga = 0, StatusVaga = 0, TempoUsoHoras = 1, Label = false }
+                new() { TotalMotos = 10, VagasLivres = 4, MotosComProblema = 2, TempoMedio = 2.5f },
+                new() { TotalMotos = 20, VagasLivres = 2, MotosComProblema = 4, TempoMedio = 4.5f },
+                new() { TotalMotos = 5, VagasLivres = 8, MotosComProblema = 0, TempoMedio = 1.2f }
             };
 
-            var trainData = _mlContext.Data.LoadFromEnumerable(examples);
-            var model = pipeline.Fit(trainData);
-
-            _predictionEngine = _mlContext.Model.CreatePredictionEngine<PredictMaintenanceDTO, MaintenancePrediction>(model);
-        }
-
-        public PredictMaintenanceResultDTO Predict(PredictMaintenanceDTO input)
-        {
-            var result = _predictionEngine.Predict(input);
-            return new PredictMaintenanceResultDTO
+            var mlData = _mlContext.Data.LoadFromEnumerable(data.Select(d =>
             {
-                PrecisaManutencao = result.PredictedLabel,
-                Score = result.Probability
+                d.Label = d.TempoMedio;
+                return d;
+            }));
+
+            var model = pipeline.Fit(mlData);
+
+            _predictionEngine = _mlContext.Model.CreatePredictionEngine<ModelInput, ModelOutput>(model);
+        }
+
+        public float PreverTempoMedio(int totalMotos, int vagasLivres, int motosComProblema)
+        {
+            var input = new ModelInput
+            {
+                TotalMotos = totalMotos,
+                VagasLivres = vagasLivres,
+                MotosComProblema = motosComProblema
             };
+            var prediction = _predictionEngine.Predict(input);
+            return Math.Max(0, prediction.Score); // não devolver valor negativo
         }
 
-        private class ModelInput : PredictMaintenanceDTO
+        public class ModelInput
         {
-            public bool Label { get; set; }
+            public float TotalMotos { get; set; }
+            public float VagasLivres { get; set; }
+            public float MotosComProblema { get; set; }
+            public float TempoMedio { get; set; }
+            [ColumnName("Label")] public float Label { get; set; }
         }
 
-        private class MaintenancePrediction : PredictMaintenanceResultDTO
+        public class ModelOutput
         {
-            [ColumnName("PredictedLabel")]
-            public bool PredictedLabel { get; set; }
-            [ColumnName("Probability")]
-            public float Probability { get; set; }
+            public float Score { get; set; }
         }
     }
 }
