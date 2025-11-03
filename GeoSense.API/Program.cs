@@ -39,6 +39,8 @@ namespace GeoSense.API
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+            builder.Services.AddSingleton<MlPredictionService>();
+
             var connectionString = builder.Configuration.GetConnectionString("Oracle");
             builder.Services.AddDbContext<GeoSenseContext>(options =>
                 options.UseOracle(connectionString));
