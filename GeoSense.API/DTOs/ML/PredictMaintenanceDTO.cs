@@ -5,9 +5,9 @@
     /// </summary>
     public class PredictMaintenanceDTO
     {
-        public int TipoVaga { get; set; }
-        public int StatusVaga { get; set; }
-        public int TempoUsoHoras { get; set; }
+        public float TipoVaga { get; set; }
+        public float StatusVaga { get; set; }
+        public float TempoUsoHoras { get; set; }
     }
 
     /// <summary>
