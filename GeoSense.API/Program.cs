@@ -103,8 +103,8 @@ namespace GeoSense.API
 
                 options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
                 {
-                    Description = "API Key necessária no cabeçalho X-Api-Key. Exemplo: 'X-Api-Key: SUA_CHAVE'",
-                    Name = "X-Api-Key",
+                    Description = "API Key necessária no cabeçalho GeoSense-Api-Key. Exemplo: 'GeoSense-Api-Key: SUA_CHAVE'",
+                    Name = "GeoSense-Api-Key",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
                     Scheme = "ApiKeyScheme"

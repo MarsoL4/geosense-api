@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 namespace GeoSense.API.Middleware
 {
     /// <summary>
-    /// Middleware que exige a presença de uma API Key no header X-Api-Key para acesso aos endpoints.
+    /// Middleware que exige a presença de uma API Key no header GeoSense-Api-Key para acesso aos endpoints.
     /// </summary>
     public class ApiKeyMiddleware(RequestDelegate next, IConfiguration configuration)
     {
-        private const string APIKEY_NAME = "X-Api-Key";
+        private const string APIKEY_NAME = "GeoSense-Api-Key";
         private readonly RequestDelegate _next = next;
         private readonly IConfiguration _configuration = configuration;
 
