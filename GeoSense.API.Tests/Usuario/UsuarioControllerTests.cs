@@ -8,7 +8,6 @@ using GeoSense.API.Infrastructure.Repositories.Interfaces;
 using GeoSense.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using GeoSense.API.Infrastructure.Persistence;
 
 namespace GeoSense.API.Tests.Usuario
 {
@@ -79,7 +78,7 @@ namespace GeoSense.API.Tests.Usuario
                 .Options;
 
             using var context = new GeoSenseContext(options);
-            var usuario = new Usuario(0, "Teste", "teste@exemplo.com", "senha123", Domain.Enums.TipoUsuario.ADMINISTRADOR);
+            var usuario = new GeoSense.API.Infrastructure.Persistence.Usuario(0, "Teste", "teste@exemplo.com", "senha123", Domain.Enums.TipoUsuario.ADMINISTRADOR);
             context.Usuarios.Add(usuario);
             await context.SaveChangesAsync();
 
@@ -138,7 +137,7 @@ namespace GeoSense.API.Tests.Usuario
                 .Options;
 
             using var context = new GeoSenseContext(options);
-            var usuario = new Usuario(0, "Teste", "teste@exemplo.com", "senha123", Domain.Enums.TipoUsuario.ADMINISTRADOR);
+            var usuario = new GeoSense.API.Infrastructure.Persistence.Usuario(0, "Teste", "teste@exemplo.com", "senha123", Domain.Enums.TipoUsuario.ADMINISTRADOR);
             context.Usuarios.Add(usuario);
             await context.SaveChangesAsync();
 
@@ -181,7 +180,7 @@ namespace GeoSense.API.Tests.Usuario
                 .Options;
 
             using var context = new GeoSenseContext(options);
-            var usuario = new Usuario(0, "Teste", "email@email.com", "senhaemail", Domain.Enums.TipoUsuario.ADMINISTRADOR);
+            var usuario = new GeoSense.API.Infrastructure.Persistence.Usuario(0, "Teste", "email@email.com", "senhaemail", Domain.Enums.TipoUsuario.ADMINISTRADOR);
             context.Usuarios.Add(usuario);
             await context.SaveChangesAsync();
 

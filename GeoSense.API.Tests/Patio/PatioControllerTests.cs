@@ -8,7 +8,6 @@ using GeoSense.API.Infrastructure.Repositories.Interfaces;
 using GeoSense.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using GeoSense.API.Infrastructure.Persistence;
 
 namespace GeoSense.API.Tests.Patio
 {
@@ -73,7 +72,7 @@ namespace GeoSense.API.Tests.Patio
                 .Options;
 
             using var context = new GeoSenseContext(options);
-            var patio = new Patio { Nome = "Pátio Antigo" };
+            var patio = new GeoSense.API.Infrastructure.Persistence.Patio { Nome = "Pátio Antigo" };
             context.Patios.Add(patio);
             await context.SaveChangesAsync();
 
@@ -119,7 +118,7 @@ namespace GeoSense.API.Tests.Patio
 
             using var context = new GeoSenseContext(options);
 
-            var patio = new Patio { Nome = "Pátio Central" };
+            var patio = new GeoSense.API.Infrastructure.Persistence.Patio { Nome = "Pátio Central" };
             context.Patios.Add(patio);
             await context.SaveChangesAsync();
 
