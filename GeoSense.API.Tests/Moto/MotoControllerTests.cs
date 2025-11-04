@@ -9,7 +9,6 @@ using GeoSense.API.DTOs.Moto;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using GeoSense.API.AutoMapper;
-using GeoSense.API.Infrastructure.Persistence; // <-- USAR EXPLÍCITO PARA Vaga/Moto
 
 namespace GeoSense.API.Tests.Moto
 {
