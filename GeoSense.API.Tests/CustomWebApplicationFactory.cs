@@ -14,7 +14,6 @@ namespace GeoSense.API.Tests
         {
             builder.ConfigureServices(services =>
             {
-                // Remove o contexto real do Oracle e substitui pelo InMemory!
                 var descriptor = services.SingleOrDefault(
                     d => d.ServiceType ==
                         typeof(DbContextOptions<GeoSenseContext>));
@@ -29,12 +28,9 @@ namespace GeoSense.API.Tests
                 });
 
                 // Garante que o banco está criado ao iniciar os testes  
-                var sp = services.BuildServiceProvider();
-                using (var scope = sp.CreateScope())
-                {
-                    var db = scope.ServiceProvider.GetRequiredService<GeoSenseContext>();
-                    db.Database.EnsureCreated();
-                }
+                using var scope = services.BuildServiceProvider().CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<GeoSenseContext>();
+                db.Database.EnsureCreated();
             });
         }
     }

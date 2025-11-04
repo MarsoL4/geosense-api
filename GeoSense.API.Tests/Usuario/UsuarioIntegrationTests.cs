@@ -5,14 +5,9 @@ using Xunit;
 
 namespace GeoSense.API.Tests.Usuario
 {
-    public class UsuarioIntegrationTests : IClassFixture<CustomWebApplicationFactory<Program>>
+    public class UsuarioIntegrationTests(CustomWebApplicationFactory<Program> factory) : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly HttpClient _client;
-
-        public UsuarioIntegrationTests(CustomWebApplicationFactory<Program> factory)
-        {
-            _client = factory.CreateClient();
-        }
+        private readonly HttpClient _client = factory.CreateClient();
 
         [Fact]
         public async Task GetUsuarios_DeveRetornarStatusCode200()

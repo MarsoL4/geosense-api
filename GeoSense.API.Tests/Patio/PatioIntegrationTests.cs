@@ -5,14 +5,9 @@ using Xunit;
 
 namespace GeoSense.API.Tests.Patio
 {
-    public class PatioIntegrationTests : IClassFixture<CustomWebApplicationFactory<Program>>
+    public class PatioIntegrationTests(CustomWebApplicationFactory<Program> factory) : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly HttpClient _client;
-
-        public PatioIntegrationTests(CustomWebApplicationFactory<Program> factory)
-        {
-            _client = factory.CreateClient();
-        }
+        private readonly HttpClient _client = factory.CreateClient();
 
         [Fact]
         public async Task GetPatios_DeveRetornarStatusCode200()

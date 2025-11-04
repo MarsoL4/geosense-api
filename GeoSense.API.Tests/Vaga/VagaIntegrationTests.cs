@@ -5,14 +5,9 @@ using Xunit;
 
 namespace GeoSense.API.Tests.Vaga
 {
-    public class VagaIntegrationTests : IClassFixture<CustomWebApplicationFactory<Program>>
+    public class VagaIntegrationTests(CustomWebApplicationFactory<Program> factory) : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly HttpClient _client;
-
-        public VagaIntegrationTests(CustomWebApplicationFactory<Program> factory)
-        {
-            _client = factory.CreateClient();
-        }
+        private readonly HttpClient _client = factory.CreateClient();
 
         [Fact]
         public async Task GetVagas_DeveRetornarStatusCode200()

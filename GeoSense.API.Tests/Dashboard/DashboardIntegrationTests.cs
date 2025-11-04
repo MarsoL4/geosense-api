@@ -3,14 +3,9 @@ using Xunit;
 
 namespace GeoSense.API.Tests.Dashboard
 {
-    public class DashboardIntegrationTests : IClassFixture<CustomWebApplicationFactory<Program>>
+    public class DashboardIntegrationTests(CustomWebApplicationFactory<Program> factory) : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly HttpClient _client;
-
-        public DashboardIntegrationTests(CustomWebApplicationFactory<Program> factory)
-        {
-            _client = factory.CreateClient();
-        }
+        private readonly HttpClient _client = factory.CreateClient();
 
         [Fact]
         public async Task GetDashboard_DeveRetornar200()

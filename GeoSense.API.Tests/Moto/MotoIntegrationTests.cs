@@ -6,14 +6,9 @@ using Xunit;
 
 namespace GeoSense.API.Tests.Moto
 {
-    public class MotoIntegrationTests : IClassFixture<CustomWebApplicationFactory<Program>>
+    public class MotoIntegrationTests(CustomWebApplicationFactory<Program> factory) : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly HttpClient _client;
-
-        public MotoIntegrationTests(CustomWebApplicationFactory<Program> factory)
-        {
-            _client = factory.CreateClient();
-        }
+        private readonly HttpClient _client = factory.CreateClient();
 
         [Fact]
         public async Task GetMotos_DeveRetornarStatusCode200()
