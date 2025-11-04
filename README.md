@@ -51,6 +51,56 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
 
 ---
 
+## 🧪 Testes Automatizados
+
+O projeto inclui:
+- Testes unitários (xUnit) abrangendo lógica de negócio e fluxo de controle principal das entidades.
+- Testes de integração reais com WebApplicationFactory garantindo funcionamento dos principais endpoints.
+- Para rodar todos os testes, utilize o comando acima; não é necessário banco externo (os testes usam banco in-memory).
+
+---
+
+## 🔑 Segurança
+
+- Todos os endpoints (exceto `/swagger` e `/health`) exigem a inclusão do header de API Key:  
+  `GeoSense-Api-Key: SEGREDO-GEOSENSE-123` (valor configurado em `appsettings.json`).
+- Para propósitos de testes e demonstração local, a chave está mantida no arquivo de configuração do repositório.
+
+---
+
+## 🩺 Health Checks
+
+- Endpoint de health check disponível em:  
+  ```
+  GET /health
+  ```
+- Resposta em JSON exibindo o status da aplicação e do banco.
+- Exemplo de resposta esperada:
+```json
+{
+  "status": "Healthy",
+  "totalDuration": "00:00:01.1203756",
+  "entries": {
+    "Database": {
+      "status": "Healthy",
+      "duration": "00:00:01.0069991",
+      "tags": []
+    }
+  }
+}
+```
+
+---
+
+## 🔄 Versionamento de API
+
+- Endpoints versionados por URL, no padrão:  
+  ```
+  /api/v1/[controller]
+  ```
+
+---
+
 ## 🔑 Principais Entidades
 
 - **Moto:** Controle de motos cadastradas, informações de placa, chassi, modelo e vaga alocada.
@@ -65,7 +115,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
 ### 🛵 MotoController
 
 #### Listar Motos (Paginação + HATEOAS)
-- **GET** `/api/moto?page=1&pageSize=10`
+- **GET** `/api/v1/moto?page=1&pageSize=10`
 - **Resposta:**
     ```json
     {
@@ -76,6 +126,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
           "placa": "ABC1D23",
           "chassi": "9C2JC4110JR000001",
           "problemaIdentificado": "Motor com ruído excessivo",
+          "risco": "ALTO",
           "vagaId": 1
         }
       ],
@@ -83,13 +134,13 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
       "page": 1,
       "pageSize": 10,
       "links": [
-        { "rel": "self", "method": "GET", "href": "/api/moto?page=1&pageSize=10" }
+        { "rel": "self", "method": "GET", "href": "/api/v1/moto?page=1&pageSize=10" }
       ]
     }
     ```
 
 #### Buscar Moto por ID
-- **GET** `/api/moto/{id}`
+- **GET** `/api/v1/moto/{id}`
 - **Resposta:**
     ```json
     {
@@ -98,12 +149,13 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
       "placa": "ABC1D23",
       "chassi": "9C2JC4110JR000001",
       "problemaIdentificado": "Motor com ruído excessivo",
+      "risco": "ALTO",
       "vagaId": 1
     }
     ```
 
 #### Criar Moto
-- **POST** `/api/moto`
+- **POST** `/api/v1/moto`
 - **Payload de exemplo:**
     ```json
     {
@@ -124,13 +176,14 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
         "placa": "ABC1D23",
         "chassi": "9C2JC4110JR000001",
         "problemaIdentificado": "Motor com ruído excessivo",
+        "risco": "ALTO",
         "vagaId": 1
       }
     }
     ```
 
 #### Atualizar Moto
-- **PUT** `/api/moto/{id}`
+- **PUT** `/api/v1/moto/{id}`
 - **Payload igual ao POST**
 - **Resposta:**
     ```json
@@ -142,13 +195,14 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
         "placa": "ABC1D23",
         "chassi": "9C2JC4110JR000001",
         "problemaIdentificado": "Motor com ruído excessivo",
+        "risco": "ALTO",
         "vagaId": 1
       }
     }
     ```
 
 #### Remover Moto
-- **DELETE** `/api/moto/{id}`
+- **DELETE** `/api/v1/moto/{id}`
 - **Resposta:**
     ```json
     {
@@ -161,7 +215,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
 ### 🅿️ VagaController
 
 #### Listar Vagas (Paginação + HATEOAS)
-- **GET** `/api/vaga?page=1&pageSize=10`
+- **GET** `/api/v1/vaga?page=1&pageSize=10`
 - **Resposta:**
     ```json
     {
@@ -179,13 +233,13 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
       "page": 1,
       "pageSize": 10,
       "links": [
-        { "rel": "self", "method": "GET", "href": "/api/vaga?page=1&pageSize=10" }
+        { "rel": "self", "method": "GET", "href": "/api/v1/vaga?page=1&pageSize=10" }
       ]
     }
     ```
 
 #### Buscar Vaga por ID
-- **GET** `/api/vaga/{id}`
+- **GET** `/api/v1/vaga/{id}`
 - **Resposta:**
     ```json
     {
@@ -199,7 +253,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
     ```
 
 #### Criar Vaga
-- **POST** `/api/vaga`
+- **POST** `/api/v1/vaga`
 - **Payload de exemplo:**
     ```json
     {
@@ -225,7 +279,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
     ```
 
 #### Atualizar Vaga
-- **PUT** `/api/vaga/{id}`
+- **PUT** `/api/v1/vaga/{id}`
 - **Payload igual ao POST**
 - **Resposta:**
     ```json
@@ -243,7 +297,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
     ```
 
 #### Remover Vaga
-- **DELETE** `/api/vaga/{id}`
+- **DELETE** `/api/v1/vaga/{id}`
 - **Resposta:**
     ```json
     {
@@ -256,7 +310,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
 ### 🏢 PatioController
 
 #### Listar Pátios (Paginação + HATEOAS)
-- **GET** `/api/patio?page=1&pageSize=10`
+- **GET** `/api/v1/patio?page=1&pageSize=10`
 - **Resposta:**
     ```json
     {
@@ -270,13 +324,13 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
       "page": 1,
       "pageSize": 10,
       "links": [
-        { "rel": "self", "method": "GET", "href": "/api/patio?page=1&pageSize=10" }
+        { "rel": "self", "method": "GET", "href": "/api/v1/patio?page=1&pageSize=10" }
       ]
     }
     ```
 
 #### Buscar Pátio por ID (com vagas)
-- **GET** `/api/patio/{id}`
+- **GET** `/api/v1/patio/{id}`
 - **Resposta:**
     ```json
     {
@@ -296,7 +350,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
     ```
 
 #### Criar Pátio
-- **POST** `/api/patio`
+- **POST** `/api/v1/patio`
 - **Payload de exemplo:**
     ```json
     {
@@ -315,7 +369,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
     ```
 
 #### Atualizar Pátio
-- **PUT** `/api/patio/{id}`
+- **PUT** `/api/v1/patio/{id}`
 - **Payload igual ao POST**
 - **Resposta:**
     ```json
@@ -329,7 +383,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
     ```
 
 #### Remover Pátio
-- **DELETE** `/api/patio/{id}`
+- **DELETE** `/api/v1/patio/{id}`
 - **Resposta:**
     ```json
     {
@@ -342,7 +396,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
 ### 👤 UsuarioController
 
 #### Listar Usuários (Paginação + HATEOAS)
-- **GET** `/api/usuario?page=1&pageSize=10`
+- **GET** `/api/v1/usuario?page=1&pageSize=10`
 - **Resposta:**
     ```json
     {
@@ -359,13 +413,13 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
       "page": 1,
       "pageSize": 10,
       "links": [
-        { "rel": "self", "method": "GET", "href": "/api/usuario?page=1&pageSize=10" }
+        { "rel": "self", "method": "GET", "href": "/api/v1/usuario?page=1&pageSize=10" }
       ]
     }
     ```
 
 #### Buscar Usuário por ID
-- **GET** `/api/usuario/{id}`
+- **GET** `/api/v1/usuario/{id}`
 - **Resposta:**
     ```json
     {
@@ -378,7 +432,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
     ```
 
 #### Criar Usuário
-- **POST** `/api/usuario`
+- **POST** `/api/v1/usuario`
 - **Payload de exemplo:**
     ```json
     {
@@ -403,7 +457,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
     ```
 
 #### Atualizar Usuário
-- **PUT** `/api/usuario/{id}`
+- **PUT** `/api/v1/usuario/{id}`
 - **Payload igual ao POST**
 - **Resposta:**
     ```json
@@ -420,7 +474,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
     ```
 
 #### Remover Usuário
-- **DELETE** `/api/usuario/{id}`
+- **DELETE** `/api/v1/usuario/{id}`
 - **Resposta:**
     ```json
     {
@@ -433,7 +487,7 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
 ### 🧩 DashboardController
 
 #### Dados agregados do sistema para o dashboard
-- **GET** `/api/dashboard`
+- **GET** `/api/v1/dashboard`
 - **Resposta:**
     ```json
     {
