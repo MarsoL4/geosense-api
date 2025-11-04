@@ -25,6 +25,7 @@ namespace GeoSense.API
 
             builder.Services.AddScoped<MotoService>();
             builder.Services.AddScoped<IMotoRepository, MotoRepository>();
+            builder.Services.AddSingleton<MotoRiscoMlService>();
 
             builder.Services.AddScoped<VagaService>();
             builder.Services.AddScoped<IVagaRepository, VagaRepository>();
