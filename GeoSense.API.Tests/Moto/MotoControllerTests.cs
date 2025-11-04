@@ -5,12 +5,11 @@ using GeoSense.API.Infrastructure.Repositories;
 using GeoSense.API.Infrastructure.Repositories.Interfaces;
 using GeoSense.API.Services;
 using Microsoft.EntityFrameworkCore;
-using GeoSense.API.DTOs;
+using GeoSense.API.DTOs.Moto;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using GeoSense.API.AutoMapper;
-using GeoSense.API.DTOs.Moto;
-using GeoSense.API.Infrastructure.Persistence;
+using GeoSense.API.Infrastructure.Persistence; // <-- USAR EXPLÍCITO PARA Vaga/Moto
 
 namespace GeoSense.API.Tests.Moto
 {
@@ -33,7 +32,7 @@ namespace GeoSense.API.Tests.Moto
                 .Options;
 
             using var context = new GeoSenseContext(options);
-            context.Vagas.Add(new Vaga(1, 1));
+            context.Vagas.Add(new GeoSense.API.Infrastructure.Persistence.Vaga(1, 1));
             await context.SaveChangesAsync();
 
             IMotoRepository motoRepo = new MotoRepository(context);
@@ -66,9 +65,9 @@ namespace GeoSense.API.Tests.Moto
 
             using var context = new GeoSenseContext(options);
             // Cria vaga e moto
-            var vaga = new Vaga(1, 1);
+            var vaga = new GeoSense.API.Infrastructure.Persistence.Vaga(1, 1);
             context.Vagas.Add(vaga);
-            var moto = new Moto
+            var moto = new GeoSense.API.Infrastructure.Persistence.Moto
             {
                 Modelo = "Honda CG",
                 Placa = "ABC1D23",
@@ -102,9 +101,9 @@ namespace GeoSense.API.Tests.Moto
                 .Options;
 
             using var context = new GeoSenseContext(options);
-            var vaga = new Vaga(2, 1);
+            var vaga = new GeoSense.API.Infrastructure.Persistence.Vaga(2, 1);
             context.Vagas.Add(vaga);
-            var moto = new Moto
+            var moto = new GeoSense.API.Infrastructure.Persistence.Moto
             {
                 Modelo = "Yamaha",
                 Placa = "XYZ5678",
@@ -139,10 +138,10 @@ namespace GeoSense.API.Tests.Moto
 
             using var context = new GeoSenseContext(options);
 
-            var vaga = new Vaga(1, 1);
+            var vaga = new GeoSense.API.Infrastructure.Persistence.Vaga(1, 1);
             context.Vagas.Add(vaga);
 
-            var moto = new Moto
+            var moto = new GeoSense.API.Infrastructure.Persistence.Moto
             {
                 Modelo = "Honda",
                 Placa = "XYZ0001",
@@ -213,10 +212,10 @@ namespace GeoSense.API.Tests.Moto
 
             using var context = new GeoSenseContext(options);
 
-            var vaga = new Vaga(1, 1);
+            var vaga = new GeoSense.API.Infrastructure.Persistence.Vaga(1, 1);
             context.Vagas.Add(vaga);
 
-            var moto = new Moto
+            var moto = new GeoSense.API.Infrastructure.Persistence.Moto
             {
                 Modelo = "Honda",
                 Placa = "XYZ0001",
