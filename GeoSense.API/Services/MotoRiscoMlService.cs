@@ -53,7 +53,7 @@ namespace GeoSense.API.Services
         public class MotoRiscoInput
         {
             public string Modelo { get; set; } = "";
-            public int TipoVaga { get; set; }
+            public float TipoVaga { get; set; }
             public string ProblemaIdentificado { get; set; } = "";
             public bool Risco { get; set; }
         }
