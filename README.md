@@ -37,14 +37,19 @@ A arquitetura segue boas práticas REST, separação de responsabilidades (camad
    dotnet build
    ```
 
-4. **Executar a API:**  
+4. **Aplicar Migrations no Banco de Dados:**
+   ```bash
+   dotnet ef database update --project GeoSense.API
+   ```
+
+5. **Executar a API:**  
    ```bash
    dotnet run --project GeoSense.API
    ```
    Acesse a documentação Swagger em:  
    `http://localhost:5194/swagger` ou `https://localhost:7150/swagger`
 
-5. **Rodar Testes Automatizados:**  
+6. **Rodar Testes Automatizados:**  
    ```bash
    dotnet test
    ```
