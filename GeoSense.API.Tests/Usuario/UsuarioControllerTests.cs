@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GeoSense.API.Infrastructure.Persistence;
 
-namespace GeoSense.API.Tests
+namespace GeoSense.API.Tests.Usuario
 {
     public class UsuarioControllerTests
     {

@@ -13,7 +13,7 @@ using AutoMapper;
 using GeoSense.API.AutoMapper;
 using GeoSense.API.DTOs.Vaga;
 
-namespace GeoSense.API.Tests
+namespace GeoSense.API.Tests.Vaga
 {
     public class VagaControllerTests
     {

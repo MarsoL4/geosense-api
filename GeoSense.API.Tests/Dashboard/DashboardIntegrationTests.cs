@@ -1,13 +1,13 @@
 ﻿using System.Net;
 using Xunit;
 
-namespace GeoSense.API.Tests
+namespace GeoSense.API.Tests.Dashboard
 {
-    public class DashboardIntegrationTests : IClassFixture<CustomWebApplicationFactory<GeoSense.API.Program>>
+    public class DashboardIntegrationTests : IClassFixture<CustomWebApplicationFactory<Program>>
     {
         private readonly HttpClient _client;
 
-        public DashboardIntegrationTests(CustomWebApplicationFactory<GeoSense.API.Program> factory)
+        public DashboardIntegrationTests(CustomWebApplicationFactory<Program> factory)
         {
             _client = factory.CreateClient();
         }
