@@ -101,6 +101,8 @@ namespace GeoSense.API.Tests.Moto
 
             using var context = new GeoSenseContext(options);
             var vaga = new GeoSense.API.Infrastructure.Persistence.Vaga(2, 1);
+            vaga.GetType().GetProperty("Tipo")?.SetValue(vaga, GeoSense.API.Domain.Enums.TipoVaga.Reparo_Simples);
+
             context.Vagas.Add(vaga);
             var moto = new GeoSense.API.Infrastructure.Persistence.Moto
             {
@@ -125,7 +127,7 @@ namespace GeoSense.API.Tests.Moto
             var dto = Assert.IsType<MotoDetalhesDTO>(okResult.Value);
             Assert.Equal("Yamaha", dto.Modelo);
             Assert.Equal("", dto.ProblemaIdentificado);
-            Assert.Equal("BAIXO", dto.Risco); // Esperado risco BAIXO na lógica dummy
+            Assert.Equal("BAIXO", dto.Risco); // Agora deve passar!
         }
 
         [Fact]
